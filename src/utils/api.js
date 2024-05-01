@@ -1,6 +1,6 @@
-import axios from 'axios';
-import { getAuthTokenFromCookie } from './handleCookies';
-import { SERVER_URL } from '../config';
+import axios from "axios";
+import { getAuthTokenFromCookie } from "./handleCookies";
+import { SERVER_URL } from "../config";
 
 const getAxiosInstance = () => {
   const authToken = getAuthTokenFromCookie();
@@ -79,4 +79,3 @@ export const putRequest = async ({ endpoint, data }) => {
     return error;
   }
 };
-
