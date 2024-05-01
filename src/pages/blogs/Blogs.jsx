@@ -20,7 +20,7 @@ import {
 } from '../../utils';
 import { FaSearch } from 'react-icons/fa';
 
-const Posts = () => {
+const Blogs = () => {
   const { currentUser } = useUserAuthContext();
   const [page, setPage] = useState(1);
   const [trendingPostDuration, setTrendingPostDuration] = useState('weekly');
@@ -186,5 +186,6 @@ const Posts = () => {
   );
 };
 
-export default Posts;
+export default Blogs;
+
 

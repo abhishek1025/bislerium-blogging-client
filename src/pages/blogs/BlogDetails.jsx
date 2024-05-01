@@ -12,7 +12,7 @@ import {
     useUserAuthContext
 } from '../../utils';
 
-const PostDetails = () => {
+const BlogDetails = () => {
   const { postID, userID } = useParams();
 
   const { currentUser } = useUserAuthContext();
@@ -180,5 +180,7 @@ const PostDetails = () => {
   );
 };
 
-export default PostDetails;
+export default BlogDetails;
+
+
 

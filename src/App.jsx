@@ -1,34 +1,48 @@
-import { Route, Routes } from "react-router-dom";
-import "./App.scss";
+import { Route, Routes } from 'react-router-dom';
+import './App.scss';
 
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
-import { AppLayout } from "./components";
-import { PageNotFound } from "./pages";
-import HomePage from "./pages/HomePage";
-import { useUserAuthContext } from "./utils";
-import ForgotPassword from "./pages/Authentication/ForgotPassword";
-import ChangePassword from "./pages/Authentication/ChangePassword";
-import AuthenticationPage from "./pages/Authentication/AuthenticationPage";
+import { AppLayout } from './components';
+import {
+  AuthenticationPage,
+  ChangePassword,
+  HomePage,
+  PageNotFound,
+  PostBlogForm,
+  PostDetails,
+  ProfilePage,
+  ResetPassword,
+} from './pages';
+
+import { useUserAuthContext } from './utils';
 
 function App() {
   const { currentUser } = useUserAuthContext();
 
   return (
     <>
-      <ToastContainer position="bottom-right" />
+      <ToastContainer position='bottom-right' />
 
       <Routes>
-        <Route path="/" element={<AppLayout />}>
+        <Route path='forgot-password' element={<ResetPassword />} />
+
+        <Route path='/' element={<AppLayout />}>
           <Route index element={<HomePage />} />
+
+          <Route path='blogs'>
+            <Route path=':blogID' element={<PostDetails />} />
+            <Route path='new' element={<PostBlogForm />} />
+            <Route path='edit/:blogID' element={<PostBlogForm />} />
+          </Route>
+
+          <Route path='change-password' element={<ChangePassword />} />
+          <Route path='profile' element={<ProfilePage />} />
         </Route>
-        <Route path="/authentication" element={<AuthenticationPage />}></Route>
+        <Route path='/authentication' element={<AuthenticationPage />} />
 
-        <Route path="/forgot-password" element={<ForgotPassword />} />
-        <Route path="/change-password" element={<ChangePassword />} />
-
-        <Route path="/*" element={<PageNotFound />} />
+        <Route path='/*' element={<PageNotFound />} />
       </Routes>
       {/* </Suspense> */}
     </>
@@ -36,3 +50,4 @@ function App() {
 }
 
 export default App;
+

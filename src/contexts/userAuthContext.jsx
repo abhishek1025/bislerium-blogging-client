@@ -1,60 +1,67 @@
 /* eslint-disable react/prop-types */
-import { createContext, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { getAuthTokenFromCookie } from "../utils/handleCookies";
+import { createContext, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { getAuthTokenFromCookie } from '../utils/handleCookies';
+import { SERVER_URL } from '../config';
 
 export const UserAuthContext = createContext({
-    currentUser: {},
-    setCurrentUser: () => null,
-    authToken: "",
-    setAuthToken: () => null,
+  currentUser: {},
+  setCurrentUser: () => null,
+  authToken: '',
+  setAuthToken: () => null,
 });
 
 export const UserAuthContextProvider = ({ children }) => {
-    const authTokenFromCookie = getAuthTokenFromCookie();
-    const navigate = useNavigate();
+  const authTokenFromCookie = getAuthTokenFromCookie();
+  const navigate = useNavigate();
 
-    const [currentUser, setCurrentUser] = useState(null);
-    const [authToken, setAuthToken] = useState(authTokenFromCookie);
-    const [isLoading, setIsLoading] = useState(false);
+  const [currentUser, setCurrentUser] = useState(null);
+  const [authToken, setAuthToken] = useState(authTokenFromCookie);
 
-    useEffect(() => {
-        const fetchUserInfo = async () => {
-            if (!authToken) {
-                return;
-            }
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      if (!authToken) {
+        return;
+      }
 
-            setIsLoading(true);
+      const res = await fetch(`${SERVER_URL}/v1/user/getUserDetail`, {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+        },
+      });
 
-            const res = await fetch("/api/users/me", {
-                headers: {
-                    Authorization: `Bearer ${authToken}`,
-                },
-            });
+      const resMsg = await res.json();
 
-            setIsLoading(false);
+      if (res.ok) {
+        const _user = resMsg.data;
 
-            const resMsg = await res.json();
+        setCurrentUser(_user);
 
-            if (res.ok) {
-                const _user = resMsg.data;
+        if (_user.role === 'admin') {
+          navigate('/dashboard');
+        }
 
-                setCurrentUser(_user);
+        return;
+      }
 
-                if (_user.role === "admin") {
-                    navigate("/dashboard");
-                }
+      setCurrentUser(null);
+    };
 
-                return;
-            }
+    fetchUserInfo();
+  }, [authToken]);
 
-            setCurrentUser(null);
-        };
+  const value = {
+    currentUser,
+    setCurrentUser,
+    authToken,
+    setAuthToken,
+  };
 
-        fetchUserInfo();
-    }, [authToken]);
-
-    const value = { currentUser, setCurrentUser, authToken, setAuthToken, isLoading };
-
-    return <UserAuthContext.Provider value={value}>{children}</UserAuthContext.Provider>;
+  return (
+    <UserAuthContext.Provider value={value}>
+      {children}
+    </UserAuthContext.Provider>
+  );
 };
+

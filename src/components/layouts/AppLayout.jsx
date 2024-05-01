@@ -15,10 +15,6 @@ const AppLayout = () => {
 
       <Sidebar>
         {SIDEBAR_LINKS.map(sidebarItem => {
-          if (sidebarItem.path === '/profile' && !currentUser) {
-            return null;
-          }
-
           return (
             <SidebarItem
               key={uuid4()}

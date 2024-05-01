@@ -47,7 +47,7 @@ const Header = () => {
               setDisplayDropdown(!displayDropdown);
             }}>
             <img
-              src={formatImageUrl(currentUser?.userImg)}
+              src={`data:image;base64, ${currentUser?.profilePicture}`}
               alt='User'
               className='w-full h-full cursor-pointer rounded-full'
             />
@@ -58,17 +58,19 @@ const Header = () => {
                 {/* Image and Name */}
                 <div className='flex items-center gap-x-3 px-6'>
                   <img
-                    src={formatImageUrl(currentUser?.userImg)}
+                    src={`data:image;base64, ${currentUser?.profilePicture}`}
                     className='w-[50px] h-[50px] rounded-full'
                   />
-                  <p className='font-semibold text-lg'>{currentUser?.name}</p>
+                  <p className='font-semibold text-lg'>
+                    {currentUser?.firstName}
+                  </p>
                 </div>
 
                 <div className='border-b mt-4'></div>
 
                 {/* Other Links */}
                 <div className='mt-4'>
-                  <Link to={`profile/${currentUser._id}`}>
+                  <Link to='profile'>
                     <div className='flex items-center space-x-5 text-gray-800 hover:bg-gray-100 px-6 py-3'>
                       <CiSettings size='25px' />
                       <p>Manage Account</p>
