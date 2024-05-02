@@ -13,6 +13,7 @@ import {
   getRequest,
   patchRequest,
   postRequest,
+  putRequest,
   showNotification,
   useUserAuthContext,
 } from '../../utils';
@@ -35,7 +36,7 @@ const PostBlogForm = () => {
 
     queryFn: async () => {
       const res = await getRequest({
-        endpoint: `/posts/${blogID}`,
+        endpoint: `/blog/${blogID}`,
       });
 
       return res.data || null;
@@ -114,13 +115,13 @@ const PostBlogForm = () => {
     let res;
 
     if (blogID) {
-      res = await patchRequest({
-        endpoint: `/posts/${postID}`,
+      res = await putRequest({
+        endpoint: `/blogger/update-blog/${blogID}`,
         data: formData,
       });
     } else {
       res = await postRequest({
-        endpoint: '/bolgger/add-blog',
+        endpoint: '/blogger/add-blog',
         data: formData,
       });
     }
@@ -168,8 +169,7 @@ const PostBlogForm = () => {
       <div className='bg-white p-6 rounded-lg px-2 md:px-5 py-5 md:pt-3'>
         {blogID ? (
           <Breadcrumbs className='bg-white mb-4'>
-            <Link to='profile'> Profile</Link>
-            <Link to={`/profile/${currentUser?._id}?tab=Posts`}>Posts</Link>
+            <Link to='/'>Blogs</Link>
             <span>Edit</span>
           </Breadcrumbs>
         ) : (

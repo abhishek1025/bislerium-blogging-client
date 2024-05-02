@@ -8,6 +8,7 @@ import { v4 as uuid4 } from 'uuid';
 import DefaultProfileImg from '../../assets/images/default-img.avif';
 import { SIDEBAR_LINKS } from '../../constants';
 import {
+  base64ToImage,
   formatImageUrl,
   useHandleLogOut,
   useUserAuthContext,
@@ -47,7 +48,7 @@ const Header = () => {
               setDisplayDropdown(!displayDropdown);
             }}>
             <img
-              src={`data:image;base64, ${currentUser?.profilePicture}`}
+              src={base64ToImage(currentUser?.profilePicture)}
               alt='User'
               className='w-full h-full cursor-pointer rounded-full'
             />
@@ -58,7 +59,7 @@ const Header = () => {
                 {/* Image and Name */}
                 <div className='flex items-center gap-x-3 px-6'>
                   <img
-                    src={`data:image;base64, ${currentUser?.profilePicture}`}
+                    src={base64ToImage(currentUser?.profilePicture)}
                     className='w-[50px] h-[50px] rounded-full'
                   />
                   <p className='font-semibold text-lg'>
@@ -231,4 +232,6 @@ const MobileViewHeader = () => {
     </>
   );
 };
+
+
 

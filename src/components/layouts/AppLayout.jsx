@@ -30,12 +30,7 @@ const AppLayout = () => {
         {/* Header */}
         <Header />
 
-        <div
-          className={`md:px-8 bg-gray-100 h-[100%] flex-1 min-h-0 overflow-auto ${
-            location.pathname === '/' ? 'md:pb-0' : 'pb-[120px] md:pb-8'
-          }
-                    ${location.pathname === '/' ? 'px-0 pt-0' : 'px-3 pt-5'}
-                    `}>
+        <div className=' bg-gray-100 h-[100%] flex-1 min-h-0 overflow-auto p-8'>
           <Outlet />
         </div>
       </div>

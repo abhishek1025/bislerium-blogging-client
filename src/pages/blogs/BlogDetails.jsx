@@ -1,186 +1,157 @@
 import { Breadcrumbs } from '@material-tailwind/react';
 import { useQuery } from '@tanstack/react-query';
-import { format } from 'date-fns';
-import { useEffect, useRef } from 'react';
 import { AiFillLike, AiOutlineLike } from 'react-icons/ai';
 import { Link, useParams } from 'react-router-dom';
-import { postServices } from '../../services';
 import {
-    formatImageUrl,
-    useCheckVotingStatus,
-    useSubmitVote,
-    useUserAuthContext
+  base64ToImage,
+  formatImageUrl,
+  getRequest,
+  useUserAuthContext,
 } from '../../utils';
+import { FaEdit } from 'react-icons/fa';
 
 const BlogDetails = () => {
-  const { postID, userID } = useParams();
+  const { blogID } = useParams();
 
   const { currentUser } = useUserAuthContext();
-  const viewRecordedRef = useRef(false);
 
   const {
-    data: post,
+    data: blog,
     isLoading,
     refetch: refetchPostDetails,
     isSuccess,
   } = useQuery({
-    queryKey: ['Post'],
-    queryFn: postServices.getPostByID(postID),
+    queryKey: ['Blog'],
+    queryFn: async () => {
+      const res = await getRequest({
+        endpoint: `/blog/${blogID}`,
+      });
+      return res.data;
+    },
   });
 
-  const { votingStatus, setVotingStatus, submitVote } =
-    useSubmitVote(refetchPostDetails);
-
-  const { data: existingVotingStatus } = useCheckVotingStatus({
-    endpoint: `/posts/${postID}/check-vote/${currentUser?._id}`,
-    setVotingStatus,
-  });
-
-  useEffect(() => {
-    // Function to record views
-    const recordView = () => {
-      if (currentUser?._id && postID && !viewRecordedRef.current) {
-        postServices.recordPostViews({ userID: currentUser._id, postID });
-        // Mark as recorded to prevent duplicate records
-        viewRecordedRef.current = true;
-      }
-    };
-
-    // Call recordView
-    recordView();
-  }, [currentUser, postID]);
+  const votingStatus = 'upvote';
 
   const BREAD_CRUMBS = {
-    posts: (
+    blogs: (
       <Breadcrumbs className='bg-white'>
-        <Link to='/posts'>Post</Link>
-        <span>Post Details</span>
-      </Breadcrumbs>
-    ),
-    bookmarks: (
-      <Breadcrumbs className='bg-white'>
-        <Link to='/bookmarks'>Bookmarks</Link>
-        <Link to='/bookmarks?tab=posts'>Posts</Link>
-        <span>Post Details</span>
+        <Link to='/'>Blogs</Link>
+        <span>Blog Details</span>
       </Breadcrumbs>
     ),
     profile: (
       <Breadcrumbs className='bg-white'>
-        <Link to={`/profile/${userID}`}>Profile</Link>
-        <Link to={`/profile/${userID}?tab=Posts`}>Posts</Link>
-        <span>Post Details</span>
+        <Link to='/profile'>Profile</Link>
+        <Link to='/profile'>Blogs</Link>
+        <span>Blog Details</span>
       </Breadcrumbs>
     ),
   };
 
   return (
     <div className='bg-white p-6 rounded-lg px-2 md:px-5 py-5 md:pt-3'>
-      {/* Breadcrumbs */}
-      {BREAD_CRUMBS[location.pathname.split('/')[1]]}
-
       {isSuccess && (
-        <div className='w-full lg:w-[75%] m-auto'>
-          <div className='space-y-5'>
-            <h2 className='text-3xl font-bold mt-5'>{post?.title}</h2>
+        <>
+          <div className='flex justify-between items-center cursor-pointer'>
+            {BREAD_CRUMBS[location.pathname.split('/')[1]]}
 
-            <div className='flex items-center gap-x-3'>
-              {/* Image */}
-              <img
-                src={`${formatImageUrl(post?.mentor?.userImg)}`}
-                alt=''
-                className='w-16 h-16 rounded-full'
-              />
-
-              {/* Name and Post Date */}
+            {currentUser && currentUser.id === blog?.authorId && (
               <div>
-                <p className='text-lg font-semibold'>{post?.mentor?.name}</p>
+                <Link to={`/blogs/edit/${blog?.blogId}`}>
+                  <FaEdit size={20} color='green' />
+                </Link>
+              </div>
+            )}
+          </div>
+          <div className='w-full lg:w-[75%] m-auto'>
+            <div className='space-y-5'>
+              <div className='mt-5'>
+                {blog?.isModified && (
+                  <p className='text-sm  text-red-600 font-bold'>
+                    This blog is modified
+                  </p>
+                )}
 
-                <p className='text-sm text-gray-600'>
-                  Posted at{' '}
-                  {format(
-                    new Date(post?.createdAt),
-                    'MMMM dd, yyyy hh:mm:ss a'
-                  )}
-                </p>
+                <h2 className='text-3xl font-bold'>{blog?.title}</h2>
+              </div>
+
+              <div className='flex items-center gap-x-3'>
+                {/* Image */}
+                <img
+                  src={base64ToImage(blog?.profilePicture)}
+                  alt=''
+                  className='w-16 h-16 rounded-full'
+                />
+
+                {/* Name and Post Date */}
+                <div>
+                  <p className='text-lg font-semibold'>{blog?.authorName}</p>
+
+                  <p className='text-sm text-gray-600'>
+                    Posted at {blog.createdOn}
+                  </p>
+                </div>
               </div>
             </div>
-          </div>
 
-          <div className='border-b border-t flex justify-between items-center py-3 mt-5'>
-            <div className='flex gap-x-5 items-center'>
-              {/* Upvote */}
-              <div className='flex items-center gap-x-1'>
-                <button
-                  onClick={submitVote({
-                    docType: 'post',
-                    docID: postID,
-                    newVotingStatus: 'upvote',
-                    docAuthorID: post?.mentor?._id,
-                  })}>
-                  {votingStatus === 'upvote' ? (
-                    <AiFillLike
-                      className='text-black cursor-pointer'
-                      size={25}
-                    />
-                  ) : (
-                    <AiOutlineLike
-                      className='text-black cursor-pointer'
-                      size={25}
-                    />
-                  )}
-                </button>
-                <p className='text-xs px-2 py-1 rounded bg-gray-300'>
-                  {post?.upVotes}
-                </p>
-              </div>
+            <div className='border-b border-t flex justify-between items-center py-3 mt-5'>
+              <div className='flex gap-x-5 items-center'>
+                {/* Upvote */}
+                <div className='flex items-center gap-x-1'>
+                  <button>
+                    {votingStatus === 'upvote' ? (
+                      <AiFillLike
+                        className='text-black cursor-pointer'
+                        size={25}
+                      />
+                    ) : (
+                      <AiOutlineLike
+                        className='text-black cursor-pointer'
+                        size={25}
+                      />
+                    )}
+                  </button>
+                  <p className='text-xs px-2 py-1 rounded bg-gray-300'>10</p>
+                </div>
 
-              {/* Downvote */}
-              <div className='flex items-center gap-x-1'>
-                <button
-                  onClick={submitVote({
-                    docType: 'post',
-                    docID: postID,
-                    newVotingStatus: 'downvote',
-                    docAuthorID: post?.mentor?._id,
-                  })}>
-                  {votingStatus === 'downvote' ? (
-                    <AiFillLike
-                      className='text-black cursor-pointer rotate-180'
-                      size={25}
-                    />
-                  ) : (
-                    <AiOutlineLike
-                      className='text-black cursor-pointer rotate-180'
-                      size={25}
-                    />
-                  )}
-                </button>
-                <p className='text-xs px-2 py-1 rounded bg-gray-300'>
-                  {post?.downVotes}
-                </p>
+                {/* Downvote */}
+                <div className='flex items-center gap-x-1'>
+                  <button>
+                    {votingStatus === 'downvote' ? (
+                      <AiFillLike
+                        className='text-black cursor-pointer rotate-180'
+                        size={25}
+                      />
+                    ) : (
+                      <AiOutlineLike
+                        className='text-black cursor-pointer rotate-180'
+                        size={25}
+                      />
+                    )}
+                  </button>
+                  <p className='text-xs px-2 py-1 rounded bg-gray-300'>{10}</p>
+                </div>
               </div>
             </div>
-          </div>
 
-          {/* Cover Img */}
-          <div>
-            <img
-              src={formatImageUrl(post?.coverImg)}
-              className='object-cover h-[350px] w-full my-16'
+            {/* Cover Img */}
+            <div>
+              <img
+                src={base64ToImage(blog?.coverPage)}
+                className='object-cover h-[350px] w-full my-16'
+              />
+            </div>
+
+            <div
+              className='unreset'
+              dangerouslySetInnerHTML={{ __html: blog?.content }}
             />
           </div>
-
-          <div
-            className='unreset'
-            dangerouslySetInnerHTML={{ __html: post?.content }}
-          />
-        </div>
+        </>
       )}
     </div>
   );
 };
 
 export default BlogDetails;
-
-
 

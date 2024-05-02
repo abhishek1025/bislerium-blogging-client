@@ -2,40 +2,50 @@
 import { format } from 'date-fns';
 import { BsBookmarkCheckFill, BsBookmarkPlus } from 'react-icons/bs';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { formatImageUrl, formatViews, useUserAuthContext } from '../../utils';
+import {
+  base64ToImage,
+  formatImageUrl,
+  formatViews,
+  useUserAuthContext,
+} from '../../utils';
 import { FaEdit } from 'react-icons/fa';
 
-const PostCard = ({ post, refetchBookmarks }) => {
+const BlogCard = ({ blog, refetchBookmarks }) => {
   const { currentUser } = useUserAuthContext();
 
-  const { _id, title, coverImg, content, mentor, createdAt, upVotes, views } =
-    post;
+  const {
+    blogId,
+    title,
+    coverPage,
+    content,
+    createdOn,
+    isModified,
+    authorId,
+    authorName,
+    profilePicture,
+  } = blog;
+
   const location = useLocation();
   const navigate = useNavigate();
 
-  const isLoggedIn = currentUser?._id === mentor._id;
+  const isLoggedIn = false;
 
   return (
     <div className='border rounded-md py-4 px-5 space-y-5'>
       <div className='flex justify-between'>
         <div className='flex items-center gap-x-3'>
           {/* Image */}
-          <Link to={`/profile/${mentor?._id}`}>
-            <img
-              src={`${formatImageUrl(mentor?.userImg)}`}
-              alt=''
-              className='w-12 h-12 rounded-full'
-            />
-          </Link>
+
+          <img
+            src={base64ToImage(profilePicture)}
+            alt=''
+            className='w-12 h-12 rounded-full'
+          />
 
           {/* Name and Post Date */}
           <div>
-            <p className='text-lg font-semibold'>
-              <Link to={`/profile/${mentor?._id}`}>{mentor?.name}</Link>
-            </p>
-            <p className='text-sm text-gray-600'>
-              {format(new Date(createdAt), 'MMM dd, yyyy')}
-            </p>
+            <p className='text-lg font-semibold'>{authorName}</p>
+            <p className='text-sm text-gray-600'>{createdOn}</p>
           </div>
         </div>
 
@@ -48,14 +58,25 @@ const PostCard = ({ post, refetchBookmarks }) => {
         )}
       </div>
 
-      <Link to={location.pathname.startsWith('/posts') ? _id : `posts/${_id}`}>
+      <Link
+        to={
+          location.pathname.startsWith('/')
+            ? `blogs/${blogId}`
+            : `blogs/${blogId}`
+        }>
         <div className='flex flex-col md:flex-row gap-x-4 justify-between'>
           <div className='space-y-2 md:w-[60%] lg:w-[70%] mt-3'>
-            {/* title */}
-            <h2 className='line-clamp-2 md:line-clamp-none text-lg font-bold'>
-              {title}
-            </h2>
-
+            <div className='mt-4'>
+              {/* title */}
+              <h2 className='line-clamp-2 md:line-clamp-none text-lg font-bold'>
+                {title}{' '}
+                {isModified && (
+                  <span className='text-sm  text-red-600 font-bold'>
+                    (Edited)
+                  </span>
+                )}
+              </h2>
+            </div>
             {/* Explanation */}
             <div
               className='hidden md:line-clamp-2 lg:line-clamp-3 unreset post-card'
@@ -65,7 +86,9 @@ const PostCard = ({ post, refetchBookmarks }) => {
             <p className='underline text-blue-600'>
               <Link
                 to={
-                  location.pathname.startsWith('/posts') ? _id : `posts/${_id}`
+                  location.pathname.startsWith('/blogs')
+                    ? `blogs/${blogId}`
+                    : `blogs/${blogId}`
                 }>
                 Read More
               </Link>
@@ -75,7 +98,7 @@ const PostCard = ({ post, refetchBookmarks }) => {
           {/* Cover Image */}
           <div className='mt-4 md:mt-0'>
             <img
-              src={`${formatImageUrl(coverImg)}`}
+              src={base64ToImage(coverPage)}
               className='h-[170px] w-[250px] object-cover'
             />
           </div>
@@ -85,14 +108,15 @@ const PostCard = ({ post, refetchBookmarks }) => {
       {/* Footer */}
       <div className='flex justify-between items-center'>
         <p>
-          <span className='text-sm'>{upVotes} likes </span>
+          <span className='text-sm'>{10} upvote </span>
           <span className='text-gray-600 font-bold mx-2'>·</span>
-          <span className='text-sm'>{formatViews(views)} reads</span>
+          <span className='text-sm'>{10} downvote</span>
         </p>
       </div>
     </div>
   );
 };
 
-export default PostCard;
+export default BlogCard;
+
 
