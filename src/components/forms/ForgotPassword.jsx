@@ -8,7 +8,7 @@ import {
 } from '@material-tailwind/react';
 
 import React, { useState } from 'react';
-import { postRequest, showNotification } from '../../utils';
+import { formatErrorMessage, postRequest, showNotification } from '../../utils';
 
 const ForgotPassword = () => {
   const [open, setOpen] = useState(false);
@@ -43,7 +43,7 @@ const ForgotPassword = () => {
     showNotification({
       icon: 'error',
       title: 'Error',
-      message: res.message || 'Error Occured',
+      message: formatErrorMessage(res),
     });
   };
 

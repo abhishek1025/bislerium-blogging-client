@@ -75,8 +75,11 @@ export const base64ToImage = base64 => {
   return `data:image/;base64,${base64}`;
 };
 
-export const formatErrorMessage = errors => {
-  return Object.values(errors)[0][0];
-};
+export const formatErrorMessage = response => {
+  if (response?.errors) {
+    return Object.values(response.errors)[0][0];
+  }
 
+  return response.message;
+};
 

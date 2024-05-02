@@ -1,22 +1,22 @@
+import { ArticleOutlined } from '@mui/icons-material';
 import { BiHomeAlt2 } from 'react-icons/bi';
-import { BsBookmarkCheck, BsQuestionSquare } from 'react-icons/bs';
 import { FiUser } from 'react-icons/fi';
 import {
-  MdOutlineArticle,
-  MdOutlineDashboard,
-  MdOutlineEventAvailable,
+  MdOutlineDashboard
 } from 'react-icons/md';
-import { PiUsersThree } from 'react-icons/pi';
-import { RiCommunityLine } from 'react-icons/ri';
 import { SlLock } from 'react-icons/sl';
-import { TfiAnnouncement, TfiBag } from 'react-icons/tfi';
-import { MdErrorOutline } from 'react-icons/md';
 
 export const SIDEBAR_LINKS = [
   {
     text: 'Home',
     icon: <BiHomeAlt2 size='25px' />,
     path: '/',
+  },
+  {
+    text: 'My Blogs',
+    icon: <ArticleOutlined size='25px' />,
+    path: '/my-blogs',
+    showIfLoggedIn: true,
   },
   {
     text: 'Profile',

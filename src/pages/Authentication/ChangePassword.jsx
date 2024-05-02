@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Loader, PageTitle } from '../../components';
 import { Button, Input } from '@material-tailwind/react';
 import {
+  formatErrorMessage,
   patchRequest,
   postRequest,
   showNotification,
@@ -67,7 +68,7 @@ const ChangePasswordPage = () => {
     if (!res.ok) {
       showNotification({
         title: 'Error',
-        message: res.message || 'Unexpected Error Occured, please try later',
+        message: formatErrorMessage(res),
         icon: 'error',
       });
       return;

@@ -152,12 +152,8 @@ const PostBlogForm = () => {
       return;
     }
 
-    const errorMessage = res.errors
-      ? formatErrorMessage(res.errors)
-      : res.message;
-
     showNotification({
-      message: errorMessage,
+      message: formatErrorMessage(res),
       title: 'Error',
       icon: 'error',
     });
@@ -169,7 +165,7 @@ const PostBlogForm = () => {
       <div className='bg-white p-6 rounded-lg px-2 md:px-5 py-5 md:pt-3'>
         {blogID ? (
           <Breadcrumbs className='bg-white mb-4'>
-            <Link to='/'>Blogs</Link>
+            <Link to='/my-blogs'>My Blogs</Link>
             <span>Edit</span>
           </Breadcrumbs>
         ) : (
@@ -262,7 +258,7 @@ const PostBlogForm = () => {
             </div>
           )}
 
-          <div className='w-full lg:w-[80%] m-auto'>
+          <div className='w-full'>
             {displayPreview && (
               <div className='my-8 unreset'>
                 <div dangerouslySetInnerHTML={{ __html: content }}></div>
@@ -274,7 +270,7 @@ const PostBlogForm = () => {
               <TextEditor
                 value={content}
                 setValue={setContent}
-                height={500}
+                height={700}
                 initialValue={content}
               />
             </div>

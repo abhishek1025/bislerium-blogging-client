@@ -9,4 +9,7 @@ export * from './ui';
 export { default as SignInForm } from './forms/SignInForm';
 export { default as SignUpForm } from './forms/SignUpForm';
 export { default as ForgotPassword } from './forms/ForgotPassword';
+export { default as PostComment } from './comments/PostComment';
+export { default as EditComment } from './comments/EditComment';
+export { default as CommentsList } from './comments/CommentsList';
 

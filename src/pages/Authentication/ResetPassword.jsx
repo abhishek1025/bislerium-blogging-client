@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { PageTitle } from '../../components/ui';
 import { Button, Input } from '@material-tailwind/react';
-import { postRequest, showNotification } from '../../utils';
+import { formatErrorMessage, postRequest, showNotification } from '../../utils';
 import validator from 'validator';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 
@@ -95,7 +95,7 @@ const ResetPassword = () => {
 
     showNotification({
       title: 'Error',
-      message: res.message || 'Unable to reset password',
+      message: formatErrorMessage(res),
       icon: 'error',
     });
   };

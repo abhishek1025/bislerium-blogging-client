@@ -4,7 +4,7 @@ import './App.scss';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-import { AppLayout } from './components';
+import { AppLayout, ProtectedRoutes } from './components';
 import {
   AuthenticationPage,
   ChangePassword,
@@ -30,21 +30,25 @@ function App() {
       <Routes>
         <Route path='forgot-password' element={<ResetPassword />} />
 
+        <Route path='/authentication' element={<AuthenticationPage />} />
+
         <Route path='/' element={<AppLayout />}>
           <Route index element={<HomePage />} />
+          <Route path='/blogs/:blogID' element={<PostDetails />} />
 
-          <Route path='blogs'>
-            <Route index element={<UserBlogs />} />
-            <Route path=':blogID' element={<PostDetails />} />
-            <Route path='new' element={<PostBlogForm />} />
-            <Route path='edit/:blogID' element={<PostBlogForm />} />
+          <Route element={<ProtectedRoutes />}>
+            <Route path='my-blogs'>
+              <Route path=':blogID' element={<PostDetails />} />
+              <Route index element={<UserBlogs />} />
+              <Route path='edit/:blogID' element={<PostBlogForm />} />
+            </Route>
+
+            <Route path='blogs/new' element={<PostBlogForm />} />
+
+            <Route path='change-password' element={<ChangePassword />} />
+            <Route path='profile' element={<ProfilePage />} />
           </Route>
-
-          <Route path='change-password' element={<ChangePassword />} />
-          <Route path='profile' element={<ProfilePage />} />
-          <Route path='profile/edit' element={<EditProfilePage />} />
         </Route>
-        <Route path='/authentication' element={<AuthenticationPage />} />
 
         <Route path='/*' element={<PageNotFound />} />
       </Routes>

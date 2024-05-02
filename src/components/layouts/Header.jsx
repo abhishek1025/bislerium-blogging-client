@@ -13,6 +13,7 @@ import {
   useHandleLogOut,
   useUserAuthContext,
 } from '../../utils';
+import { Button } from '@material-tailwind/react';
 
 const LOGO = () => (
   <Link to='/'>
@@ -38,7 +39,11 @@ const Header = () => {
       <LOGO />
 
       {/* Profile Section */}
-      <section>
+      <section className='flex gap-x-4 items-center'>
+        <Link to='/blogs/new'>
+          <Button variant='outlined'>New Blog</Button>
+        </Link>
+
         {currentUser ? (
           <div
             className={`w-[55px] h-[55px] rounded-full relative ${
@@ -232,6 +237,4 @@ const MobileViewHeader = () => {
     </>
   );
 };
-
-
 

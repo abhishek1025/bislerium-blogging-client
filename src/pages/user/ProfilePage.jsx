@@ -1,17 +1,24 @@
-import { Input } from '@material-tailwind/react';
+import { Button, Input } from '@material-tailwind/react';
 import React, { useEffect, useState } from 'react';
 import { FaUpload } from 'react-icons/fa';
 import { ButtonWithHoverEffect } from '../../components';
 import {
   base64ToImage,
+  deleteRequest,
   fileToBase64,
+  formatErrorMessage,
   putRequest,
+  removeCookie,
   showNotification,
   useUserAuthContext,
 } from '../../utils';
+import Swal from 'sweetalert2';
+import { COOKIE_NAMES } from '../../constants';
+import { useNavigate } from 'react-router-dom';
 
 const ProfilePage = () => {
-  const { currentUser, setCurrentUser } = useUserAuthContext();
+  const { currentUser, setCurrentUser, setAuthToken } = useUserAuthContext();
+  const navigate = useNavigate();
 
   const [userInfo, setUserInfo] = useState({
     firstName: '',
@@ -54,8 +61,6 @@ const ProfilePage = () => {
       data: formData,
     });
 
-    console.log(res);
-
     if (res.ok) {
       showNotification({
         icon: 'success',
@@ -75,7 +80,49 @@ const ProfilePage = () => {
     showNotification({
       icon: 'error',
       title: 'Error',
-      message: res.message || 'Profile Update Error',
+      message: formatErrorMessage(res),
+    });
+  };
+
+  const deleteAccount = async () => {
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!',
+    }).then(async result => {
+      if (result.isConfirmed) {
+        const res = await deleteRequest({
+          endpoint: '/user/delete',
+        });
+
+        if (res.ok) {
+          showNotification({
+            title: 'Deleted',
+            message: 'Your account has been deleted',
+            icon: 'success',
+          });
+
+          navigate('/authentication');
+
+          removeCookie(COOKIE_NAMES.AUTH_TOKEN);
+          removeCookie(COOKIE_NAMES.USER_ID);
+
+          setAuthToken(null);
+          setCurrentUser(null);
+
+          return;
+        }
+
+        showNotification({
+          title: 'Error',
+          message: formatErrorMessage(res),
+          icon: 'error',
+        });
+      }
     });
   };
 
@@ -164,11 +211,23 @@ const ProfilePage = () => {
                 readOnly
               />
               <br />
-              <ButtonWithHoverEffect
-                type='submit'
-                className='mt-3 bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600'>
-                Save
-              </ButtonWithHoverEffect>
+              <div className='flex justify-center items-center gap-x-4'>
+                <Button type='submit' size='lg' color='blue'>
+                  Save
+                </Button>
+
+                <Button
+                  type='button'
+                  onClick={() => {
+                    setIsEditing(false);
+                    setProfileImage('');
+                    setProfileImageUrl(currentUser?.profilePicture);
+                  }}
+                  color='red'
+                  size='lg'>
+                  Cancel
+                </Button>
+              </div>
             </form>
           </>
         ) : (
@@ -177,10 +236,11 @@ const ProfilePage = () => {
               {userInfo?.firstName} {userInfo?.lastName}
             </h1>
             <p>{userInfo?.email}</p>
-            <div className='w-[15%] flex gap-5 items-center'>
-              <ButtonWithHoverEffect onClick={() => setIsEditing(true)}>
-                Edit
-              </ButtonWithHoverEffect>
+            <div className='flex gap-5 items-center pt-8'>
+              <Button onClick={() => setIsEditing(true)}>Edit Profile</Button>
+              <Button color='red' onClick={deleteAccount}>
+                Delete Account
+              </Button>
             </div>
           </>
         )}

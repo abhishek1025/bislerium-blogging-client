@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { getRequest } from '../../utils';
-import { BlogCard } from '../../components';
+import { BlogCard, Loader, NoDataComponent, PageTitle } from '../../components';
 
 const UserBlogs = () => {
   const { data: blogs, isLoading } = useQuery({
@@ -15,14 +15,21 @@ const UserBlogs = () => {
   });
 
   if (isLoading) {
-    return <p>Loading...</p>;
+    return <Loader />;
   }
 
   return (
-    <div className='bg-white w-full space-y-5 px-2 py-3'>
-      {blogs?.map(blog => {
-        return <BlogCard key={blog.blogId} blog={blog} />;
-      })}
+    <div className='bg-white p-6 rounded-lg px-5 py-5 pt-3'>
+      <PageTitle title='My Blogs' />
+      <br />
+
+      {blogs.length === 0 && <NoDataComponent message='No Blogs Found' />}
+
+      <div className='space-y-8'>
+        {blogs?.map(blog => {
+          return <BlogCard key={blog.blogId} blog={blog} />;
+        })}
+      </div>
     </div>
   );
 };

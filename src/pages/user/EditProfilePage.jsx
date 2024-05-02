@@ -6,6 +6,7 @@ import { Breadcrumbs } from '@material-tailwind/react';
 import {
   base64ToImage,
   fileToBase64,
+  formatErrorMessage,
   putRequest,
   showNotification,
   useUserAuthContext,
@@ -82,7 +83,7 @@ const EditProfilePage = () => {
     showNotification({
       icon: 'error',
       title: 'Error',
-      message: res.message || 'Profile Update Error',
+      message: formatErrorMessage(res),
     });
   };
 
@@ -186,4 +187,5 @@ const EditProfilePage = () => {
 };
 
 export default EditProfilePage;
+
 

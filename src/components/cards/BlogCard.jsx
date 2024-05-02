@@ -1,17 +1,18 @@
 /* eslint-disable react/prop-types */
-import { format } from 'date-fns';
-import { BsBookmarkCheckFill, BsBookmarkPlus } from 'react-icons/bs';
+import { Delete } from '@mui/icons-material';
+import { FaEdit } from 'react-icons/fa';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import {
   base64ToImage,
-  formatImageUrl,
-  formatViews,
+  deleteRequest,
+  formatErrorMessage,
+  showNotification,
   useUserAuthContext,
 } from '../../utils';
-import { FaEdit } from 'react-icons/fa';
+import Swal from 'sweetalert2';
 
 const BlogCard = ({ blog, refetchBookmarks }) => {
-  const { currentUser } = useUserAuthContext();
+  const { currentUser, authToken: isLoggedIn } = useUserAuthContext();
 
   const {
     blogId,
@@ -28,42 +29,80 @@ const BlogCard = ({ blog, refetchBookmarks }) => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const isLoggedIn = false;
+  const isThisMyBlogsPage = location.pathname.startsWith('/my-blogs');
+
+  const deleteBlog = async () => {
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!',
+    }).then(async result => {
+      if (result.isConfirmed) {
+        const res = await deleteRequest({
+          endpoint: `/blogger/delete-blog/${blogId}`,
+        });
+
+        if (res.ok) {
+          showNotification({
+            title: 'Deleted',
+            message: 'Blog deleted successfully',
+            icon: 'success',
+          });
+
+          return;
+        }
+
+        showNotification({
+          title: 'Error',
+          message: formatErrorMessage(res),
+          icon: 'error',
+        });
+      }
+    });
+  };
 
   return (
     <div className='border rounded-md py-4 px-5 space-y-5'>
-      <div className='flex justify-between'>
+      <div className='flex justify-between mb-4'>
         <div className='flex items-center gap-x-3'>
           {/* Image */}
-
           <img
-            src={base64ToImage(profilePicture)}
+            src={base64ToImage(
+              isThisMyBlogsPage ? currentUser?.profilePicture : profilePicture
+            )}
             alt=''
             className='w-12 h-12 rounded-full'
           />
 
           {/* Name and Post Date */}
           <div>
-            <p className='text-lg font-semibold'>{authorName}</p>
+            <p className='text-lg font-semibold'>
+              {isThisMyBlogsPage
+                ? `${currentUser?.firstName} ${currentUser?.lastName}`
+                : authorName}
+            </p>
             <p className='text-sm text-gray-600'>{createdOn}</p>
           </div>
         </div>
 
-        {location.pathname.startsWith('/profile') && isLoggedIn && (
-          <div>
-            <Link to={`/profile/${currentUser._id}/posts/edit/${_id}`}>
-              <FaEdit size={20} color='green' />
+        {isThisMyBlogsPage && isLoggedIn && (
+          <div className='flex gap-x-5 items-center'>
+            <Link to={`/my-blogs/edit/${blogId}`}>
+              <FaEdit size={25} color='green' />
             </Link>
+
+            <button type='button' className='cursor-pointer'>
+              <Delete className='text-red-600 text-xl' onClick={deleteBlog} />
+            </button>
           </div>
         )}
       </div>
 
-      <Link
-        to={
-          location.pathname.startsWith('/')
-            ? `blogs/${blogId}`
-            : `blogs/${blogId}`
-        }>
+      <Link to={isThisMyBlogsPage ? blogId : `blogs/${blogId}`}>
         <div className='flex flex-col md:flex-row gap-x-4 justify-between'>
           <div className='space-y-2 md:w-[60%] lg:w-[70%] mt-3'>
             <div className='mt-4'>
@@ -84,12 +123,7 @@ const BlogCard = ({ blog, refetchBookmarks }) => {
             />
 
             <p className='underline text-blue-600'>
-              <Link
-                to={
-                  location.pathname.startsWith('/blogs')
-                    ? `blogs/${blogId}`
-                    : `blogs/${blogId}`
-                }>
+              <Link to={isThisMyBlogsPage ? blogId : `blogs/${blogId}`}>
                 Read More
               </Link>
             </p>
@@ -118,5 +152,4 @@ const BlogCard = ({ blog, refetchBookmarks }) => {
 };
 
 export default BlogCard;
-
 

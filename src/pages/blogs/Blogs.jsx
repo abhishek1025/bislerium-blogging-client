@@ -145,9 +145,11 @@ const Blogs = () => {
           <NoDataComponent message='NO POSTS FOUND TO SHOW' />
         )}
 
-        {blogs?.map(blog => {
-          return <BlogCard key={blog.blogId} blog={blog} />;
-        })}
+        {blogs
+          ?.filter(({ authorId, authorName }) => authorId && authorName)
+          ?.map(blog => {
+            return <BlogCard key={blog.blogId} blog={blog} />;
+          })}
 
         <PaginationButton
           limit={LIMIT}

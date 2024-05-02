@@ -6,6 +6,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import {
   createCookie,
+  formatErrorMessage,
   postRequest,
   showNotification,
   useUserAuthContext,
@@ -63,7 +64,7 @@ const SignInForm = ({ authPageContainerRef, setLoader }) => {
     showNotification({
       icon: 'error',
       title: 'Error',
-      message: res.message,
+      message: formatErrorMessage(res),
     });
   };
 
@@ -127,4 +128,5 @@ const SignInForm = ({ authPageContainerRef, setLoader }) => {
 };
 
 export default SignInForm;
+
 

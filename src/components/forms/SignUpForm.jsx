@@ -1,7 +1,7 @@
 import { Input } from '@material-tailwind/react';
 import { useState } from 'react';
 import { FaUpload } from 'react-icons/fa';
-import { postRequest, showNotification } from '../../utils';
+import { formatErrorMessage, postRequest, showNotification } from '../../utils';
 import validator from 'validator';
 import { useNavigate } from 'react-router-dom';
 
@@ -128,7 +128,7 @@ const SignUpForm = ({ authPageContainerRef, setLoader }) => {
     showNotification({
       icon: 'error',
       title: 'Account Creation Error',
-      message: res.message,
+      message: formatErrorMessage(res),
     });
   };
 
@@ -248,4 +248,5 @@ const SignUpForm = ({ authPageContainerRef, setLoader }) => {
 };
 
 export default SignUpForm;
+
 

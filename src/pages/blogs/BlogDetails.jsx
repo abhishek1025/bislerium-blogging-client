@@ -1,19 +1,24 @@
-import { Breadcrumbs } from '@material-tailwind/react';
+import { Breadcrumbs, Button, Typography } from '@material-tailwind/react';
 import { useQuery } from '@tanstack/react-query';
 import { AiFillLike, AiOutlineLike } from 'react-icons/ai';
 import { Link, useParams } from 'react-router-dom';
-import {
-  base64ToImage,
-  formatImageUrl,
-  getRequest,
-  useUserAuthContext,
-} from '../../utils';
-import { FaEdit } from 'react-icons/fa';
+import { base64ToImage, getRequest, useUserAuthContext } from '../../utils';
+import { CommentsList, EditComment, PostComment } from '../../components';
+import { useEffect, useState } from 'react';
 
 const BlogDetails = () => {
   const { blogID } = useParams();
 
   const { currentUser } = useUserAuthContext();
+
+  const [postComment, setPostComment] = useState(false);
+  const [editComment, setEditComment] = useState(false);
+
+  const [editCommentDetails, setEditCommentDetails] = useState({
+    commentId: null,
+    blogId: null,
+    description: '',
+  });
 
   const {
     data: blog,
@@ -32,6 +37,15 @@ const BlogDetails = () => {
 
   const votingStatus = 'upvote';
 
+  const handleEditCommentDetails = ({ commentId, description }) => {
+    setEditCommentDetails({
+      commentId,
+      blogId: blogID,
+      description,
+    });
+    setEditComment(true);
+  };
+
   const BREAD_CRUMBS = {
     blogs: (
       <Breadcrumbs className='bg-white'>
@@ -39,10 +53,9 @@ const BlogDetails = () => {
         <span>Blog Details</span>
       </Breadcrumbs>
     ),
-    profile: (
+    'my-blogs': (
       <Breadcrumbs className='bg-white'>
-        <Link to='/profile'>Profile</Link>
-        <Link to='/profile'>Blogs</Link>
+        <Link to='/my-blogs'>My Blogs</Link>
         <span>Blog Details</span>
       </Breadcrumbs>
     ),
@@ -54,16 +67,8 @@ const BlogDetails = () => {
         <>
           <div className='flex justify-between items-center cursor-pointer'>
             {BREAD_CRUMBS[location.pathname.split('/')[1]]}
-
-            {currentUser && currentUser.id === blog?.authorId && (
-              <div>
-                <Link to={`/blogs/edit/${blog?.blogId}`}>
-                  <FaEdit size={20} color='green' />
-                </Link>
-              </div>
-            )}
           </div>
-          <div className='w-full lg:w-[75%] m-auto'>
+          <div className='w-full lg:w-[90%] m-auto'>
             <div className='space-y-5'>
               <div className='mt-5'>
                 {blog?.isModified && (
@@ -146,6 +151,39 @@ const BlogDetails = () => {
               className='unreset'
               dangerouslySetInnerHTML={{ __html: blog?.content }}
             />
+
+            <div className='border border-b border-gray-400 mt-5' />
+
+            {/* Comments */}
+            <div className='flex justify-between items-center mt-4'>
+              <Typography variant='h3'>Comments</Typography>
+
+              <div>
+                {postComment || editComment ? (
+                  <Button
+                    onClick={() => {
+                      setPostComment(false);
+                      setEditComment(false);
+                    }}
+                    color='red'>
+                    Cancel
+                  </Button>
+                ) : (
+                  <Button onClick={() => setPostComment(true)}>Add</Button>
+                )}
+              </div>
+            </div>
+
+            {postComment && <PostComment />}
+            {editComment && <EditComment commentDetails={editCommentDetails} />}
+
+            {!editComment && (
+              <div className='mt-8'>
+                <CommentsList
+                  handleEditCommentDetails={handleEditCommentDetails}
+                />
+              </div>
+            )}
           </div>
         </>
       )}
