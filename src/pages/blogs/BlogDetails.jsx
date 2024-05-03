@@ -11,19 +11,10 @@ const BlogDetails = () => {
 
   const { currentUser } = useUserAuthContext();
 
-  const [postComment, setPostComment] = useState(false);
-  const [editComment, setEditComment] = useState(false);
-
-  const [editCommentDetails, setEditCommentDetails] = useState({
-    commentId: null,
-    blogId: null,
-    description: '',
-  });
-
   const {
     data: blog,
     isLoading,
-    refetch: refetchPostDetails,
+    refetch: refetchBlogDetails,
     isSuccess,
   } = useQuery({
     queryKey: ['Blog'],
@@ -36,15 +27,6 @@ const BlogDetails = () => {
   });
 
   const votingStatus = 'upvote';
-
-  const handleEditCommentDetails = ({ commentId, description }) => {
-    setEditCommentDetails({
-      commentId,
-      blogId: blogID,
-      description,
-    });
-    setEditComment(true);
-  };
 
   const BREAD_CRUMBS = {
     blogs: (
@@ -154,36 +136,7 @@ const BlogDetails = () => {
 
             <div className='border border-b border-gray-400 mt-5' />
 
-            {/* Comments */}
-            <div className='flex justify-between items-center mt-4'>
-              <Typography variant='h3'>Comments</Typography>
-
-              <div>
-                {postComment || editComment ? (
-                  <Button
-                    onClick={() => {
-                      setPostComment(false);
-                      setEditComment(false);
-                    }}
-                    color='red'>
-                    Cancel
-                  </Button>
-                ) : (
-                  <Button onClick={() => setPostComment(true)}>Add</Button>
-                )}
-              </div>
-            </div>
-
-            {postComment && <PostComment />}
-            {editComment && <EditComment commentDetails={editCommentDetails} />}
-
-            {!editComment && (
-              <div className='mt-8'>
-                <CommentsList
-                  handleEditCommentDetails={handleEditCommentDetails}
-                />
-              </div>
-            )}
+            <CommentsList />
           </div>
         </>
       )}

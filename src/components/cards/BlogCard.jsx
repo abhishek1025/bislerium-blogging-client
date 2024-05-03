@@ -53,6 +53,8 @@ const BlogCard = ({ blog, refetchBookmarks }) => {
             icon: 'success',
           });
 
+          refetchBlogs();
+
           return;
         }
 
@@ -152,4 +154,5 @@ const BlogCard = ({ blog, refetchBookmarks }) => {
 };
 
 export default BlogCard;
+
 

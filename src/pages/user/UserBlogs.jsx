@@ -3,7 +3,11 @@ import { getRequest } from '../../utils';
 import { BlogCard, Loader, NoDataComponent, PageTitle } from '../../components';
 
 const UserBlogs = () => {
-  const { data: blogs, isLoading } = useQuery({
+  const {
+    data: blogs,
+    isLoading,
+    refetch: refetchBlogs,
+  } = useQuery({
     queryKey: ['Users Blog'],
     queryFn: async () => {
       const res = await getRequest({
@@ -27,7 +31,13 @@ const UserBlogs = () => {
 
       <div className='space-y-8'>
         {blogs?.map(blog => {
-          return <BlogCard key={blog.blogId} blog={blog} />;
+          return (
+            <BlogCard
+              key={blog.blogId}
+              blog={blog}
+              refetchBlogs={refetchBlogs}
+            />
+          );
         })}
       </div>
     </div>
