@@ -1,4 +1,5 @@
 import { Breadcrumbs, Button } from '@material-tailwind/react';
+import { useQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import { MdOutlinePhotoSizeSelectActual } from 'react-icons/md';
 import { RxCross2 } from 'react-icons/rx';
@@ -9,20 +10,16 @@ import {
   base64ToImage,
   fileToBase64,
   formatErrorMessage,
-  formatImageUrl,
   getRequest,
-  patchRequest,
   postRequest,
   putRequest,
   showNotification,
   useUserAuthContext,
 } from '../../utils';
-import { useQuery } from '@tanstack/react-query';
 
 const PostBlogForm = () => {
   const { blogID } = useParams();
 
-  const { currentUser } = useUserAuthContext();
   const [coverImgURL, setCoverImgURL] = useState();
   const [coverImgFile, setCoverImgFile] = useState();
   const [title, setTitle] = useState();

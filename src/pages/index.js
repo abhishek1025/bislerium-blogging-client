@@ -10,4 +10,5 @@ export { default as ProfilePage } from './user/ProfilePage';
 export { default as EditProfilePage } from './user/EditProfilePage';
 export { default as ResetPassword } from './Authentication/ResetPassword';
 export { default as UserBlogs } from './user/UserBlogs';
-
+export { default as AdminsList } from './dashboard/AdminsList';
+export { default as Dashboard } from './dashboard/Dashboard';

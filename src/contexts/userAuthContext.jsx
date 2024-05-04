@@ -1,8 +1,10 @@
 /* eslint-disable react/prop-types */
 import { createContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getAuthTokenFromCookie } from '../utils/handleCookies';
+import { getAuthTokenFromCookie, removeCookie } from '../utils/handleCookies';
 import { SERVER_URL } from '../config';
+import { COOKIE_NAMES } from '../constants';
+import { askNotificationPermission } from '../utils';
 
 export const UserAuthContext = createContext({
   currentUser: {},
@@ -19,6 +21,8 @@ export const UserAuthContextProvider = ({ children }) => {
   const [authToken, setAuthToken] = useState(authTokenFromCookie);
 
   useEffect(() => {
+    askNotificationPermission();
+
     const fetchUserInfo = async () => {
       if (!authToken) {
         return;
@@ -45,6 +49,8 @@ export const UserAuthContextProvider = ({ children }) => {
         return;
       }
 
+      removeCookie(COOKIE_NAMES.AUTH_TOKEN);
+      removeCookie(COOKIE_NAMES.USER_ID);
       setCurrentUser(null);
     };
 

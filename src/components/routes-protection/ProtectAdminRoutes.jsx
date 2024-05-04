@@ -1,21 +1,21 @@
-import { useEffect } from "react";
-import { Navigate, Outlet } from "react-router-dom";
-import { toast } from "react-toastify";
-import { useUserAuthContext } from "../../utils";
+import { useEffect } from 'react';
+import { Navigate, Outlet } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import { useUserAuthContext } from '../../utils';
 
 const ProtectAdminRoutes = () => {
-    const { authToken, currentUser } = useUserAuthContext();
-    const isAdmin = currentUser?.role === "admin";
+  const { authToken, currentUser } = useUserAuthContext();
 
-    useEffect(() => {
-        if (!isAdmin) {
-            toast.warning("You do not have permission to access this feature.", {
-                theme: "dark",
-            });
-        }
-    }, [authToken, isAdmin]);
+  useEffect(() => {
+    if (!currentUser?.isAdmin) {
+      toast.warning('You do not have permission to access this feature.', {
+        theme: 'dark',
+      });
+    }
+  }, [authToken, currentUser?.isAdmin]);
 
-    return isAdmin ? <Outlet /> : <Navigate to="/" />;
+  return currentUser?.isAdmin ? <Outlet /> : <Navigate to='/' />;
 };
 
 export default ProtectAdminRoutes;
+

@@ -1,9 +1,7 @@
 import { ArticleOutlined } from '@mui/icons-material';
 import { BiHomeAlt2 } from 'react-icons/bi';
-import { FiUser } from 'react-icons/fi';
-import {
-  MdOutlineDashboard
-} from 'react-icons/md';
+import { FiUser, FiUsers } from 'react-icons/fi';
+import { MdOutlineDashboard } from 'react-icons/md';
 import { SlLock } from 'react-icons/sl';
 
 export const SIDEBAR_LINKS = [
@@ -37,16 +35,18 @@ export const DASHBOARD_SIDEBAR_LINKS = [
     icon: <MdOutlineDashboard size='25px' />,
     path: '/dashboard',
   },
-  {
-    text: 'Change Password',
-    icon: <SlLock size='25px' />,
-    path: 'change-password',
-  },
+
+  ...SIDEBAR_LINKS,
 
   {
-    text: 'Profile',
-    icon: <FiUser size='25px' />,
-    path: 'profile',
+    text: 'Admins',
+    icon: <FiUsers size='25px' />,
+    path: '/all-admins',
   },
 ];
+
+export const ALL_SIDEBAR_LINKS = {
+  USER: SIDEBAR_LINKS,
+  ADMIN: DASHBOARD_SIDEBAR_LINKS,
+};
 

@@ -86,6 +86,17 @@ const SignUpForm = ({ authPageContainerRef, setLoader }) => {
       return false;
     }
 
+
+    if (!profileImage) {
+      showNotification({
+        icon: 'error',
+        title: 'Validation Error',
+        message: 'Profile Picture is required',
+      });
+
+      return false;
+    }
+
     return true;
   };
 

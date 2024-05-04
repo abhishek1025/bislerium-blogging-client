@@ -83,3 +83,13 @@ export const formatErrorMessage = response => {
   return response.message;
 };
 
+export const askNotificationPermission = async () => {
+  const permission = await Notification.requestPermission();
+
+  return permission;
+};
+
+export const isNotificationGranted = () => {
+  return Notification.permission === 'granted';
+};
+

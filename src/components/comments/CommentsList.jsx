@@ -1,22 +1,45 @@
 import { Button, Typography } from '@material-tailwind/react';
+import { useQuery } from '@tanstack/react-query';
 import React, { useState } from 'react';
 import { AiOutlineLike } from 'react-icons/ai';
 import { FaEdit } from 'react-icons/fa';
 import { MdDeleteForever } from 'react-icons/md';
-import { base64ToImage } from '../../utils';
+import { useParams } from 'react-router-dom';
+import Swal from 'sweetalert2';
+import { v4 as uuid } from 'uuid';
+import {
+  base64ToImage,
+  deleteRequest,
+  formatErrorMessage,
+  getRequest,
+  showNotification,
+  useShowUnauthorizedMessage,
+  useUserAuthContext,
+} from '../../utils';
 import EditComment from './EditComment';
 import PostComment from './PostComment';
-import { useParams } from 'react-router-dom';
 
 const CommentsList = () => {
   const [postComment, setPostComment] = useState(false);
   const [editComment, setEditComment] = useState(false);
   const { blogID } = useParams();
+  const displayUnauthorizedMsg = useShowUnauthorizedMessage();
 
   const [editCommentDetails, setEditCommentDetails] = useState({
     commentId: null,
     blogId: null,
     description: '',
+  });
+
+  const { data: comments, refetch: refetchComments } = useQuery({
+    queryKey: ['Comments'],
+    queryFn: async () => {
+      const res = await getRequest({
+        endpoint: `/comment/${blogID}`,
+      });
+
+      return res.data || [];
+    },
   });
 
   const handleEditCommentDetails = ({ commentId, description }) => {
@@ -27,6 +50,11 @@ const CommentsList = () => {
     });
     setEditComment(true);
     setPostComment(false);
+  };
+
+  const hideForms = () => {
+    setPostComment(false);
+    setEditComment(false);
   };
 
   return (
@@ -47,57 +75,138 @@ const CommentsList = () => {
                 Cancel
               </Button>
             ) : (
-              <Button onClick={() => setPostComment(true)}>Add</Button>
+              <Button
+                onClick={() => {
+                  if (displayUnauthorizedMsg()) return;
+                  setPostComment(true);
+                }}>
+                Add
+              </Button>
             )}
           </div>
         </div>
 
-        {postComment && <PostComment />}
-        {editComment && <EditComment commentDetails={editCommentDetails} />}
+        {postComment && (
+          <PostComment
+            hideForms={hideForms}
+            refetchComments={refetchComments}
+          />
+        )}
+        {editComment && (
+          <EditComment
+            commentDetails={editCommentDetails}
+            refetchComments={refetchComments}
+            hideForms={hideForms}
+          />
+        )}
       </div>
 
-      {!editComment && (
-        <CommentCard handleEditCommentDetails={handleEditCommentDetails} />
-      )}
+      <div className='space-y-7'>
+        {!editComment &&
+          comments &&
+          comments.map(comment => {
+            return (
+              <CommentCard
+                handleEditCommentDetails={handleEditCommentDetails}
+                key={uuid()}
+                comment={comment}
+                refetchComments={refetchComments}
+              />
+            );
+          })}
+      </div>
     </div>
   );
 };
 
-const CommentCard = ({ handleEditCommentDetails }) => {
+const CommentCard = ({
+  handleEditCommentDetails,
+  comment,
+  refetchComments,
+}) => {
+  const { currentUser } = useUserAuthContext();
+  const {
+    commentId,
+    createdOn,
+    authorId,
+    authorName,
+    description,
+    isModified,
+    profilePicture,
+  } = comment;
+
+  const handleDeleteComment = () => {
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!',
+    }).then(async result => {
+      if (result.isConfirmed) {
+        const res = await deleteRequest({
+          endpoint: `/comment/${commentId}`,
+        });
+
+        if (res.ok) {
+          showNotification({
+            title: 'Deleted',
+            message: 'Comment deleted successfully',
+            icon: 'success',
+          });
+
+          refetchComments();
+
+          return;
+        }
+
+        showNotification({
+          title: 'Error',
+          message: formatErrorMessage(res),
+          icon: 'error',
+        });
+      }
+    });
+  };
+
   return (
     <div className='border border-gray-400 rounded p-4'>
-      <div className='flex justify-end gap-x-3'>
-        <button
-          type='button'
-          className='cursor-pointer'
-          onClick={() => {
-            handleEditCommentDetails({
-              commentId: 123456,
-              description: 'Comment',
-            });
-          }}>
-          <FaEdit size={25} color='green' />
-        </button>
-        <button type='button' className='cursor-pointer'>
-          <MdDeleteForever size={25} color='red' />
-        </button>
-      </div>
+      {currentUser?.id === authorId && (
+        <div className='flex justify-end'>
+          <button
+            onClick={() =>
+              handleEditCommentDetails({
+                commentId,
+                description,
+              })
+            }
+            className='cursor-pointer'>
+            <FaEdit size={25} color='green' />
+          </button>
+
+          <button onClick={handleDeleteComment} className='cursor-pointer'>
+            <MdDeleteForever size={25} color='red' />
+          </button>
+        </div>
+      )}
 
       <div className='flex justify-between'>
         <div className='flex items-center gap-x-3'>
           {/* Image */}
           <img
-            src={base64ToImage('')}
+            src={base64ToImage(profilePicture)}
             alt=''
             className='w-16 h-16 rounded-full'
           />
 
           {/* Name and Post Date */}
           <div>
-            <p className='text-lg font-semibold'>Abhishek shrestha</p>
+            <p className='text-lg font-semibold'>{authorName}</p>
 
             <p className='text-sm text-gray-600'>
-              Posted at 02/05/2024 13:38:37 • Edited
+              Posted at {createdOn} {isModified && '• Edited'}
             </p>
           </div>
         </div>
@@ -112,11 +221,10 @@ const CommentCard = ({ handleEditCommentDetails }) => {
         </div>
       </div>
 
-      <div className='mt-4'>
-        You totally convinced me that in some cases using react is pure
-        overhead. Why not use a webcomponent? Even plain JS would do the job...
-        Please check out this demo, which requires less than 10 lines of code.
-      </div>
+      <div
+        className='unreset mt-4'
+        dangerouslySetInnerHTML={{ __html: description }}
+      />
     </div>
   );
 };
