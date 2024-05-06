@@ -10,17 +10,17 @@ import { UserAuthContextProvider } from './contexts/UserAuthContext.jsx';
 export const queryClient = new QueryClient();
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-  // <ErrorBoundary FallbackComponent={ErrorPage}>
+  <ErrorBoundary FallbackComponent={ErrorPage}>
   <QueryClientProvider client={queryClient}>
     <BrowserRouter>
       <UserAuthContextProvider>
-        {/* <React.StrictMode> */}
+        <React.StrictMode>
         <App />
-        {/* </React.StrictMode> */}
-        {/* <ReactQueryDevtools initialOpen={false} position="bottom-right" /> */}
+        </React.StrictMode>
+        <ReactQueryDevtools initialOpen={false} position="bottom-right" />
       </UserAuthContextProvider>
     </BrowserRouter>
   </QueryClientProvider>
-  // </ErrorBoundary>
+  </ErrorBoundary>
 );
 
