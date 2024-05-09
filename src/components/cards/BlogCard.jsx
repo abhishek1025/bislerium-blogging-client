@@ -10,6 +10,7 @@ import {
   useUserAuthContext,
 } from '../../utils';
 import Swal from 'sweetalert2';
+import { Typography } from '@material-tailwind/react';
 
 const BlogCard = ({ blog, refetchBookmarks }) => {
   const { currentUser, authToken: isLoggedIn } = useUserAuthContext();
@@ -24,6 +25,7 @@ const BlogCard = ({ blog, refetchBookmarks }) => {
     authorId,
     authorName,
     profilePicture,
+    score,
   } = blog;
 
   const location = useLocation();
@@ -67,6 +69,7 @@ const BlogCard = ({ blog, refetchBookmarks }) => {
     });
   };
 
+
   return (
     <div className='border rounded-md py-4 px-5 space-y-5'>
       <div className='flex justify-between mb-4'>
@@ -90,6 +93,8 @@ const BlogCard = ({ blog, refetchBookmarks }) => {
             <p className='text-sm text-gray-600'>{createdOn}</p>
           </div>
         </div>
+
+        <Typography variant='h3'>SCORE: {score}</Typography>
 
         {isThisMyBlogsPage && isLoggedIn && (
           <div className='flex gap-x-5 items-center'>
@@ -140,11 +145,9 @@ const BlogCard = ({ blog, refetchBookmarks }) => {
           </div>
         </div>
       </Link>
-
     </div>
   );
 };
 
 export default BlogCard;
-
 
