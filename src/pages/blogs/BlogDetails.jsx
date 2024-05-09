@@ -5,6 +5,7 @@ import { Link, useParams } from 'react-router-dom';
 import {
   base64ToImage,
   getRequest,
+  useBlogDetails,
   useSubmitVote,
   useUserAuthContext,
 } from '../../utils';
@@ -15,22 +16,16 @@ import { VOTE_TYPE } from '../../constants';
 const BlogDetails = () => {
   const { blogID } = useParams();
 
-  const { currentUser } = useUserAuthContext();
-  const { voteType, submitVote } = useSubmitVote({ blogId: blogID });
-
   const {
     data: blog,
     isLoading,
     refetch: refetchBlogDetails,
     isSuccess,
-  } = useQuery({
-    queryKey: ['Blog'],
-    queryFn: async () => {
-      const res = await getRequest({
-        endpoint: `/blog/${blogID}`,
-      });
-      return res.data;
-    },
+  } = useBlogDetails(blogID);
+
+  const { voteType, submitVote } = useSubmitVote({
+    blogId: blogID,
+    authorId: blog?.authorId,
   });
 
   const BREAD_CRUMBS = {
@@ -94,6 +89,7 @@ const BlogDetails = () => {
                     onClick={submitVote({
                       voteType: VOTE_TYPE.UP_VOTE,
                       blogId: blogID,
+                      authorId: blog.authorId,
                     })}>
                     {voteType === VOTE_TYPE.UP_VOTE ? (
                       <AiFillLike
@@ -115,6 +111,7 @@ const BlogDetails = () => {
                     onClick={submitVote({
                       voteType: VOTE_TYPE.DOWN_VOTE,
                       blogId: blogID,
+                      authorId: blog.authorId,
                     })}>
                     {voteType === VOTE_TYPE.DOWN_VOTE ? (
                       <AiFillLike

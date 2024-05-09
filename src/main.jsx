@@ -11,15 +11,15 @@ export const queryClient = new QueryClient();
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   // <ErrorBoundary FallbackComponent={ErrorPage}>
-    <QueryClientProvider client={queryClient}>
-      <BrowserRouter>
-        <UserAuthContextProvider>
-          <React.StrictMode>
-            <App />
-          </React.StrictMode>
-        </UserAuthContextProvider>
-      </BrowserRouter>
-    </QueryClientProvider>
+  <QueryClientProvider client={queryClient}>
+    <BrowserRouter>
+      <UserAuthContextProvider>
+        {/* <React.StrictMode> */}
+        <App />
+        {/* </React.StrictMode> */}
+      </UserAuthContextProvider>
+    </BrowserRouter>
+  </QueryClientProvider>
   // </ErrorBoundary>
 );
 

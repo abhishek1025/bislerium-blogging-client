@@ -7,6 +7,8 @@ import { useQuery } from '@tanstack/react-query';
 import { VOTE_TYPE } from '../../constants';
 
 const useSubmitVote = ({ blogId = '', commentId = '' }) => {
+  const { sendNotification } = useUserAuthContext();
+
   const message = {
     [VOTE_TYPE.UP_VOTE]: 'upvote',
     [VOTE_TYPE.DOWN_VOTE]: 'downvote',
@@ -43,7 +45,7 @@ const useSubmitVote = ({ blogId = '', commentId = '' }) => {
   });
 
   const submitVote =
-    ({ voteType: newVoteType }) =>
+    ({ authorId, voteType: newVoteType }) =>
     async () => {
       if (!currentUser) {
         showNotification({
@@ -55,26 +57,32 @@ const useSubmitVote = ({ blogId = '', commentId = '' }) => {
       }
 
       if (!voteId && !voteType) {
-        await postVote({ newVoteType });
+        await postVote({ newVoteType, authorId });
       }
 
       if (voteId && voteType === newVoteType) {
-        await deleteVote();
+        await deleteVote(authorId);
         return;
       }
 
       if (voteId && voteType !== newVoteType) {
-        await updateVote({ newVoteType });
+        await updateVote({ newVoteType, authorId });
         return;
       }
     };
 
-  const postVote = async ({ newVoteType }) => {
+  const postVote = async ({ newVoteType, authorId }) => {
+    sendNotification({
+      userId: authorId,
+      message: `${currentUser.firstName} has ${message[newVoteType]}d your ${itemType}`,
+    });
+
     showNotification({
       icon: 'success',
       title: 'Success!!',
       message: `You ${message[newVoteType]} the ${itemType} !!!`,
     });
+
     setVoteType(newVoteType);
 
     await postRequest({
@@ -87,7 +95,12 @@ const useSubmitVote = ({ blogId = '', commentId = '' }) => {
     });
   };
 
-  const deleteVote = async () => {
+  const deleteVote = async authorId => {
+    sendNotification({
+      userId: authorId,
+      message: `${currentUser.firstName} has deleted vote in a ${itemType}`,
+    });
+
     showNotification({
       icon: 'success',
       title: 'Success!!',
@@ -100,12 +113,18 @@ const useSubmitVote = ({ blogId = '', commentId = '' }) => {
     });
   };
 
-  const updateVote = async ({ newVoteType }) => {
+  const updateVote = async ({ newVoteType, authorId }) => {
+    sendNotification({
+      userId: authorId,
+      message: `${currentUser.firstName} has ${message[newVoteType]}d on your ${itemType}`,
+    });
+
     showNotification({
       icon: 'success',
       title: 'Success!!',
       message: `You ${message[newVoteType]} the ${itemType} !!!`,
     });
+
     setVoteType(newVoteType);
 
     await putRequest({
@@ -117,4 +136,12 @@ const useSubmitVote = ({ blogId = '', commentId = '' }) => {
 };
 
 export default useSubmitVote;
+
+
+
+
+
+
+
+
 

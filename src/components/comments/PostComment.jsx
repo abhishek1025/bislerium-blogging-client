@@ -2,10 +2,20 @@ import React, { useState } from 'react';
 import TextEditor from '../TextEditor';
 import { Button } from '@material-tailwind/react';
 import { useParams } from 'react-router-dom';
-import { formatErrorMessage, postRequest, showNotification } from '../../utils';
+import {
+  formatErrorMessage,
+  postRequest,
+  showNotification,
+  useBlogDetails,
+  useUserAuthContext,
+} from '../../utils';
 
 const PostComment = ({ refetchComments, hideForms }) => {
+  const { sendNotification, currentUser } = useUserAuthContext();
+
   const { blogID } = useParams();
+
+  const { data: blog } = useBlogDetails(blogID);
 
   const [description, setDescription] = useState('');
 
@@ -48,6 +58,11 @@ const PostComment = ({ refetchComments, hideForms }) => {
         icon: 'success',
       });
 
+      sendNotification({
+        userId: blog.authorId,
+        message: `${currentUser.firstName} has posted a comment on your blog`,
+      });
+
       setDescription('');
 
       refetchComments();
@@ -74,4 +89,6 @@ const PostComment = ({ refetchComments, hideForms }) => {
 };
 
 export default PostComment;
+
+
 

@@ -5,6 +5,7 @@ import { getAuthTokenFromCookie, removeCookie } from '../utils/handleCookies';
 import { SERVER_URL } from '../config';
 import { COOKIE_NAMES } from '../constants';
 import { askNotificationPermission } from '../utils';
+import useSignalRConnection from '../utils/hooks/useSignalRConnection';
 
 export const UserAuthContext = createContext({
   currentUser: {},
@@ -20,9 +21,9 @@ export const UserAuthContextProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(null);
   const [authToken, setAuthToken] = useState(authTokenFromCookie);
 
-  useEffect(() => {
-    askNotificationPermission();
+  const { sendNotification } = useSignalRConnection(currentUser);
 
+  useEffect(() => {
     const fetchUserInfo = async () => {
       if (!authToken) {
         return;
@@ -62,6 +63,7 @@ export const UserAuthContextProvider = ({ children }) => {
     setCurrentUser,
     authToken,
     setAuthToken,
+    sendNotification,
   };
 
   return (
@@ -70,4 +72,5 @@ export const UserAuthContextProvider = ({ children }) => {
     </UserAuthContext.Provider>
   );
 };
+
 

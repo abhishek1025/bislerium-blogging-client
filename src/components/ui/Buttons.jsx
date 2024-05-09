@@ -20,13 +20,6 @@ export const ButtonWithHoverEffect = ({
   );
 };
 
-ButtonWithHoverEffect.propTypes = {
-  type: PropTypes.string.isRequired,
-  onClick: PropTypes.func,
-  children: PropTypes.string.isRequired,
-  className: PropTypes.string,
-};
-
 export const NormalButton = ({ type, className, onClick, children }) => {
   return (
     <button

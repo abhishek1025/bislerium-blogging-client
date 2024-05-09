@@ -32,7 +32,7 @@ function App() {
 
   return (
     <>
-      <ToastContainer position='bottom-right' />
+      <ToastContainer position='bottom-right' autoClose={false} stacked={true} />
 
       <Routes>
         <Route path='forgot-password' element={<ResetPassword />} />

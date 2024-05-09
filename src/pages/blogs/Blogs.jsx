@@ -96,7 +96,7 @@ const Blogs = () => {
             }}
             variant={
               filterOptionFromParams === FILTER_OPTIONS.LATEST
-                ? 'solid'
+                ? 'filled'
                 : 'outlined'
             }>
             Latest

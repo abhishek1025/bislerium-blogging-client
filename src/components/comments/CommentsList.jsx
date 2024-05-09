@@ -223,6 +223,7 @@ const CommentCard = ({
               <button
                 onClick={submitVote({
                   voteType: VOTE_TYPE.UP_VOTE,
+                  authorId,
                 })}>
                 {voteType === VOTE_TYPE.UP_VOTE ? (
                   <AiFillLike className='text-black cursor-pointer' size={25} />
@@ -240,6 +241,7 @@ const CommentCard = ({
               <button
                 onClick={submitVote({
                   voteType: VOTE_TYPE.DOWN_VOTE,
+                  authorId,
                 })}>
                 {voteType === VOTE_TYPE.DOWN_VOTE ? (
                   <AiFillLike
@@ -267,4 +269,5 @@ const CommentCard = ({
 };
 
 export default CommentsList;
+
 
