@@ -45,11 +45,11 @@ function App() {
           <Route path='/blogs/:blogID' element={<PostDetails />} />
 
           <Route element={<ProtectedRoutes />}>
-            <Route element={<ProtectAdminRoutes />}>
+            {/* <Route element={<ProtectAdminRoutes />}> */}
               <Route path='dashboard' element={<Dashboard />} />
               <Route path='all-admins' element={<AdminsList />} />
               <Route path='all-admins/new' element={<AddAdminForm />} />
-            </Route>
+            {/* </Route> */}
 
             <Route path='my-blogs'>
               <Route path=':blogID' element={<PostDetails />} />
