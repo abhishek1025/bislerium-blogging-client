@@ -60,7 +60,7 @@ const Blogs = () => {
   });
 
   return (
-    <div className='flex gap-x-12'>
+    <div className='flex gap-x-12 '>
       {isBlogsFetching && <Loader />}
 
       <div className='flex-1 px-2 md:px-5 py-5 md:p-5 bg-white rounded-lg'>
@@ -145,12 +145,13 @@ const Blogs = () => {
           <NoDataComponent message='NO POSTS FOUND TO SHOW' />
         )}
 
-        {blogs
-          ?.filter(({ authorId, authorName }) => authorId && authorName)
-          ?.map(blog => {
-            return <BlogCard key={blog.blogId} blog={blog} />;
-          })}
-
+        <div className='space-y-5'>
+          {blogs
+            ?.filter(({ authorId, authorName }) => authorId && authorName)
+            ?.map(blog => {
+              return <BlogCard key={blog.blogId} blog={blog} />;
+            })}
+        </div>
         <PaginationButton
           limit={LIMIT}
           page={page}
@@ -163,4 +164,5 @@ const Blogs = () => {
 };
 
 export default Blogs;
+
 

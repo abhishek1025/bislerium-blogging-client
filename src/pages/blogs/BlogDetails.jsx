@@ -2,14 +2,21 @@ import { Breadcrumbs, Button, Typography } from '@material-tailwind/react';
 import { useQuery } from '@tanstack/react-query';
 import { AiFillLike, AiOutlineLike } from 'react-icons/ai';
 import { Link, useParams } from 'react-router-dom';
-import { base64ToImage, getRequest, useUserAuthContext } from '../../utils';
+import {
+  base64ToImage,
+  getRequest,
+  useSubmitVote,
+  useUserAuthContext,
+} from '../../utils';
 import { CommentsList, EditComment, PostComment } from '../../components';
 import { useEffect, useState } from 'react';
+import { VOTE_TYPE } from '../../constants';
 
 const BlogDetails = () => {
   const { blogID } = useParams();
 
   const { currentUser } = useUserAuthContext();
+  const { voteType, submitVote } = useSubmitVote({ blogId: blogID });
 
   const {
     data: blog,
@@ -25,8 +32,6 @@ const BlogDetails = () => {
       return res.data;
     },
   });
-
-  const votingStatus = 'upvote';
 
   const BREAD_CRUMBS = {
     blogs: (
@@ -84,9 +89,13 @@ const BlogDetails = () => {
             <div className='border-b border-t flex justify-between items-center py-3 mt-5'>
               <div className='flex gap-x-5 items-center'>
                 {/* Upvote */}
-                <div className='flex items-center gap-x-1'>
-                  <button>
-                    {votingStatus === 'upvote' ? (
+                <div>
+                  <button
+                    onClick={submitVote({
+                      voteType: VOTE_TYPE.UP_VOTE,
+                      blogId: blogID,
+                    })}>
+                    {voteType === VOTE_TYPE.UP_VOTE ? (
                       <AiFillLike
                         className='text-black cursor-pointer'
                         size={25}
@@ -98,13 +107,16 @@ const BlogDetails = () => {
                       />
                     )}
                   </button>
-                  <p className='text-xs px-2 py-1 rounded bg-gray-300'>10</p>
                 </div>
 
                 {/* Downvote */}
-                <div className='flex items-center gap-x-1'>
-                  <button>
-                    {votingStatus === 'downvote' ? (
+                <div>
+                  <button
+                    onClick={submitVote({
+                      voteType: VOTE_TYPE.DOWN_VOTE,
+                      blogId: blogID,
+                    })}>
+                    {voteType === VOTE_TYPE.DOWN_VOTE ? (
                       <AiFillLike
                         className='text-black cursor-pointer rotate-180'
                         size={25}
@@ -116,7 +128,6 @@ const BlogDetails = () => {
                       />
                     )}
                   </button>
-                  <p className='text-xs px-2 py-1 rounded bg-gray-300'>{10}</p>
                 </div>
               </div>
             </div>

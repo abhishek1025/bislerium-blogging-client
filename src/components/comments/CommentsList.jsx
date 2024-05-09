@@ -1,7 +1,7 @@
 import { Button, Typography } from '@material-tailwind/react';
 import { useQuery } from '@tanstack/react-query';
 import React, { useState } from 'react';
-import { AiOutlineLike } from 'react-icons/ai';
+import { AiFillLike, AiOutlineLike } from 'react-icons/ai';
 import { FaEdit } from 'react-icons/fa';
 import { MdDeleteForever } from 'react-icons/md';
 import { useParams } from 'react-router-dom';
@@ -14,10 +14,12 @@ import {
   getRequest,
   showNotification,
   useShowUnauthorizedMessage,
+  useSubmitVote,
   useUserAuthContext,
 } from '../../utils';
 import EditComment from './EditComment';
 import PostComment from './PostComment';
+import { VOTE_TYPE } from '../../constants';
 
 const CommentsList = () => {
   const [postComment, setPostComment] = useState(false);
@@ -135,6 +137,8 @@ const CommentCard = ({
     profilePicture,
   } = comment;
 
+  const { voteType, submitVote } = useSubmitVote({ commentId });
+
   const handleDeleteComment = () => {
     Swal.fire({
       title: 'Are you sure?',
@@ -211,13 +215,46 @@ const CommentCard = ({
           </div>
         </div>
 
+        {/* Like Buttons */}
         <div className='flex gap-x-3 items-center'>
-          <AiOutlineLike className='text-black cursor-pointer' size={25} />
+          <div className='flex gap-x-5 items-center'>
+            {/* Upvote */}
+            <div>
+              <button
+                onClick={submitVote({
+                  voteType: VOTE_TYPE.UP_VOTE,
+                })}>
+                {voteType === VOTE_TYPE.UP_VOTE ? (
+                  <AiFillLike className='text-black cursor-pointer' size={25} />
+                ) : (
+                  <AiOutlineLike
+                    className='text-black cursor-pointer'
+                    size={25}
+                  />
+                )}
+              </button>
+            </div>
 
-          <AiOutlineLike
-            className='text-black cursor-pointer rotate-180'
-            size={25}
-          />
+            {/* Downvote */}
+            <div>
+              <button
+                onClick={submitVote({
+                  voteType: VOTE_TYPE.DOWN_VOTE,
+                })}>
+                {voteType === VOTE_TYPE.DOWN_VOTE ? (
+                  <AiFillLike
+                    className='text-black cursor-pointer rotate-180'
+                    size={25}
+                  />
+                ) : (
+                  <AiOutlineLike
+                    className='text-black cursor-pointer rotate-180'
+                    size={25}
+                  />
+                )}
+              </button>
+            </div>
+          </div>
         </div>
       </div>
 

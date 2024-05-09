@@ -6,3 +6,12 @@ export const COOKIE_NAMES = {
   USER_ID: 'userID',
 };
 
+export const VOTE_TYPE = {
+  UP_VOTE: 'UP_VOTE',
+  DOWN_VOTE: 'DOWN_VOTE',
+};
+
+
+
+
+

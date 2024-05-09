@@ -1,19 +1,14 @@
-import { useRef, useState } from 'react';
-import { CiLogin, CiLogout, CiSettings } from 'react-icons/ci';
-import { GiHamburgerMenu } from 'react-icons/gi';
-import { RxCross2 } from 'react-icons/rx';
+import { Button } from '@material-tailwind/react';
+import { useState } from 'react';
+import { CiLogout, CiSettings } from 'react-icons/ci';
 import { SlLock } from 'react-icons/sl';
-import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
-import { v4 as uuid4 } from 'uuid';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import DefaultProfileImg from '../../assets/images/default-img.avif';
-import { SIDEBAR_LINKS } from '../../constants';
 import {
   base64ToImage,
-  formatImageUrl,
   useHandleLogOut,
   useUserAuthContext,
 } from '../../utils';
-import { Button } from '@material-tailwind/react';
 
 const LOGO = () => (
   <Link to='/'>
@@ -117,124 +112,4 @@ const Header = () => {
 };
 
 export default Header;
-
-const MobileViewHeader = () => {
-  const mobMenuRef = useRef(null);
-  const mobHeaderRef = useRef(null);
-  const handleLogOut = useHandleLogOut();
-
-  const { authToken, currentUser } = useUserAuthContext();
-
-  const displayMenu = () => {
-    if (mobMenuRef.current) {
-      mobMenuRef.current.classList.add('w-full');
-      mobMenuRef.current.classList.add('overflow-auto');
-      mobMenuRef.current.classList.remove('overflow-hidden');
-    }
-  };
-
-  const closeMenu = () => {
-    if (mobMenuRef.current) {
-      mobMenuRef.current.classList.remove('w-full');
-      mobMenuRef.current.classList.remove('overflow-auto');
-      mobMenuRef.current.classList.add('overflow-hidden');
-    }
-  };
-
-  return (
-    <>
-      {/* Header */}
-      <div
-        className='px-3 py-5 border-b flex items-center justify-between bg-white sticky top-0'
-        ref={mobHeaderRef}>
-        <div onClick={displayMenu}>
-          <GiHamburgerMenu size='30px' />
-        </div>
-
-        <LOGO />
-      </div>
-
-      {/* Menu */}
-      <div
-        className='fixed bg-black w-0 top-0 left-0 bg-opacity-40 transition-all duration-150 overflow-scroll z-10'
-        style={{
-          height: window.innerHeight,
-        }}
-        ref={mobMenuRef}>
-        <div className='flex flex-col h-full bg-white w-[80%] overflow-scroll py-4 px-4'>
-          <div>
-            {/*  Image and Name  */}
-            {currentUser ? (
-              <>
-                <div className='flex items-center justify-between'>
-                  <img
-                    src={formatImageUrl(currentUser.userImg)}
-                    alt='User'
-                    className='w-[50px] h-[50px] rounded-full outline outline-blue-500'
-                  />
-
-                  <div onClick={closeMenu}>
-                    <RxCross2 size='30px' />
-                  </div>
-                </div>
-                <p className='font-semibold text-lg mt-4'>{currentUser.name}</p>
-              </>
-            ) : (
-              <div className='w-[55px] h-[55px] rounded-full  '>
-                <img
-                  src={DefaultProfileImg}
-                  alt='User'
-                  className='w-full h-full cursor-pointer rounded-full'
-                />
-              </div>
-            )}
-          </div>
-
-          <ul className='flex-1 py-5 pb-20'>
-            {SIDEBAR_LINKS.map(({ text, icon, path }) => (
-              <NavLink
-                to={path === '/profile' ? `/profile/${currentUser?._id}` : path}
-                key={uuid4()}
-                onClick={closeMenu}>
-                {({ isActive }) => (
-                  <li
-                    className={`
-                                            relative flex items-center py-2 px-3 mb-5 rounded-md cursor-pointer
-                                            transition-colors group
-                                            ${
-                                              isActive
-                                                ? 'bg-gradient-to-tr from-blue-200 to-blue-100 text-blue-800'
-                                                : 'hover:bg-blue-50 text-gray-600'
-                                            }
-                                        `}>
-                    {icon}
-                    <span className='overflow-hidden transition-all w-full ml-3'>
-                      {text}
-                    </span>
-                  </li>
-                )}
-              </NavLink>
-            ))}
-
-            {authToken ? (
-              <div
-                className='border-t flex items-center p-3 transition-all h-[50px] hover:text-blue-700 cursor-pointer gap-x-4'
-                onClick={handleLogOut}>
-                <CiLogin size='25px' className='rotate-180' />
-                Sign Out
-              </div>
-            ) : (
-              <Link to='/authentication'>
-                <div className='border-t flex items-center p-3 transition-all h-[50px] hover:text-blue-700 cursor-pointer gap-x-4'>
-                  <CiLogin size='25px' />
-                  Sign In
-                </div>
-              </Link>
-            )}
-          </ul>
-        </div>
-      </div>
-    </>
-  );
-};
 

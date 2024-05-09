@@ -141,14 +141,6 @@ const BlogCard = ({ blog, refetchBookmarks }) => {
         </div>
       </Link>
 
-      {/* Footer */}
-      <div className='flex justify-between items-center'>
-        <p>
-          <span className='text-sm'>{10} upvote </span>
-          <span className='text-gray-600 font-bold mx-2'>·</span>
-          <span className='text-sm'>{10} downvote</span>
-        </p>
-      </div>
     </div>
   );
 };
