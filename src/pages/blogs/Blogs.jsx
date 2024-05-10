@@ -23,7 +23,7 @@ const Blogs = () => {
     RELEVANT: 'RELEVANT',
     LATEST: 'LATEST',
   };
-
+  // filtering options
   const giveFilterConfig = option => {
     return {
       searchByRecency: FILTER_OPTIONS.LATEST === option,
