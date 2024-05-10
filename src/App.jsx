@@ -17,6 +17,7 @@ import {
   Dashboard,
   HomePage,
   PageNotFound,
+  PopularBlogs,
   PostBlogForm,
   PostDetails,
   ProfilePage,

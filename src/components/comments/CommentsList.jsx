@@ -13,6 +13,7 @@ import {
   formatErrorMessage,
   getRequest,
   showNotification,
+  useBlogDetails,
   useShowUnauthorizedMessage,
   useSubmitVote,
   useUserAuthContext,
@@ -126,7 +127,10 @@ const CommentCard = ({
   comment,
   refetchComments,
 }) => {
-  const { currentUser } = useUserAuthContext();
+  const { blogID } = useParams();
+  const { data: blog } = useBlogDetails(blogID);
+
+  const { currentUser, sendNotification } = useUserAuthContext();
   const {
     commentId,
     createdOn,
@@ -159,6 +163,12 @@ const CommentCard = ({
             title: 'Deleted',
             message: 'Comment deleted successfully',
             icon: 'success',
+          });
+
+          sendNotification({
+            userId: blog.authorId,
+            blogId: blogID,
+            message: `${currentUser.firstName} has deleted comment on you blog`,
           });
 
           refetchComments();
@@ -269,5 +279,6 @@ const CommentCard = ({
 };
 
 export default CommentsList;
+
 
 

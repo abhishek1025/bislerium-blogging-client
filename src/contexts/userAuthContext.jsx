@@ -21,7 +21,7 @@ export const UserAuthContextProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(null);
   const [authToken, setAuthToken] = useState(authTokenFromCookie);
 
-  const { sendNotification } = useSignalRConnection(currentUser);
+  const { sendNotification } = useSignalRConnection();
 
   useEffect(() => {
     const fetchUserInfo = async () => {

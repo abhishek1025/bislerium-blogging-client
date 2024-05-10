@@ -5,9 +5,11 @@ import { deleteRequest, getRequest, postRequest, putRequest } from '../api';
 import useUserAuthContext from './useUserAuthContext';
 import { useQuery } from '@tanstack/react-query';
 import { VOTE_TYPE } from '../../constants';
+import { useParams } from 'react-router-dom';
 
 const useSubmitVote = ({ blogId = '', commentId = '' }) => {
   const { sendNotification } = useUserAuthContext();
+  const { blogID: blogIdFromParams } = useParams();
 
   const message = {
     [VOTE_TYPE.UP_VOTE]: 'upvote',
@@ -73,6 +75,7 @@ const useSubmitVote = ({ blogId = '', commentId = '' }) => {
 
   const postVote = async ({ newVoteType, authorId }) => {
     sendNotification({
+      blogId: blogIdFromParams,
       userId: authorId,
       message: `${currentUser.firstName} has ${message[newVoteType]}d your ${itemType}`,
     });
@@ -97,6 +100,7 @@ const useSubmitVote = ({ blogId = '', commentId = '' }) => {
 
   const deleteVote = async authorId => {
     sendNotification({
+      blogId: blogIdFromParams,
       userId: authorId,
       message: `${currentUser.firstName} has deleted vote in a ${itemType}`,
     });
@@ -115,6 +119,7 @@ const useSubmitVote = ({ blogId = '', commentId = '' }) => {
 
   const updateVote = async ({ newVoteType, authorId }) => {
     sendNotification({
+      blogId: blogIdFromParams,
       userId: authorId,
       message: `${currentUser.firstName} has ${message[newVoteType]}d on your ${itemType}`,
     });
@@ -136,12 +141,4 @@ const useSubmitVote = ({ blogId = '', commentId = '' }) => {
 };
 
 export default useSubmitVote;
-
-
-
-
-
-
-
-
 

@@ -4,11 +4,11 @@ import useUserAuthContext from './useUserAuthContext';
 import { getAuthTokenFromCookie } from '../handleCookies';
 import { showNotification } from '../alerts';
 import { toast } from 'react-toastify';
+import { queryClient } from '../../main';
 
 const useSignalRConnection = () => {
   const hubConnection = useRef(null);
   const authToken = getAuthTokenFromCookie();
-  const { currentUser } = useUserAuthContext();
 
   useEffect(() => {
     if (!authToken) {
@@ -37,6 +37,9 @@ const useSignalRConnection = () => {
     // Subscribe to server-side events
     hubConnection.current.on('ReceiveNotification', receivedMessage => {
       toast.info(receivedMessage);
+      queryClient.invalidateQueries({
+        queryKey: ['notifications'],
+      });
     });
 
     // Clean up the connection when the hook unmounts
@@ -48,13 +51,13 @@ const useSignalRConnection = () => {
     };
   }, [authToken]); // Dependency array ensures connection is refreshed when authToken changes
 
-  const sendNotification = ({ userId, message }) => {
+  const sendNotification = ({ userId, blogId, message }) => {
     if (
       hubConnection.current &&
       hubConnection.current.state === signalR.HubConnectionState.Connected
     ) {
       hubConnection.current
-        .invoke('SendNotification', userId, message)
+        .invoke('SendNotification', blogId, userId, message)
         .catch(err =>
           console.error("Error invoking 'SendNotification': ", err)
         );

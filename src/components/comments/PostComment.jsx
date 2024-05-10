@@ -59,6 +59,7 @@ const PostComment = ({ refetchComments, hideForms }) => {
       });
 
       sendNotification({
+        blogId: blogID,
         userId: blog.authorId,
         message: `${currentUser.firstName} has posted a comment on your blog`,
       });
