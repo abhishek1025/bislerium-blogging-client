@@ -10,6 +10,7 @@ import {
   useUserAuthContext,
 } from '../../utils';
 import Swal from 'sweetalert2';
+import { Typography } from '@material-tailwind/react';
 
 const BlogCard = ({ blog, refetchBookmarks }) => {
   const { currentUser, authToken: isLoggedIn } = useUserAuthContext();
@@ -24,6 +25,7 @@ const BlogCard = ({ blog, refetchBookmarks }) => {
     authorId,
     authorName,
     profilePicture,
+    score,
   } = blog;
 
   const location = useLocation();
@@ -140,11 +142,9 @@ const BlogCard = ({ blog, refetchBookmarks }) => {
           </div>
         </div>
       </Link>
-
     </div>
   );
 };
 
 export default BlogCard;
-
 

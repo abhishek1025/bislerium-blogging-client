@@ -23,6 +23,7 @@ const BlogDetails = () => {
     isSuccess,
   } = useBlogDetails(blogID);
 
+
   const { voteType, submitVote } = useSubmitVote({
     blogId: blogID,
     authorId: blog?.authorId,
@@ -153,4 +154,5 @@ const BlogDetails = () => {
 };
 
 export default BlogDetails;
+
 

@@ -62,6 +62,7 @@ const EditComment = ({ commentDetails, hideForms, refetchComments }) => {
       hideForms();
 
       sendNotification({
+        blogId: blogID,
         userId: blog.authorId,
         message: `${currentUser.firstName} has edited a comment on your blog`,
       });
