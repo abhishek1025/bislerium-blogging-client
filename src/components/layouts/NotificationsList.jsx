@@ -85,7 +85,7 @@ const NotificationsList = () => {
                       </Typography>
                       <Typography className='flex items-center gap-1 text-sm font-medium text-blue-gray-500'>
                         <ClockIcon />
-                        {format(new Date(createdOn), 'dd MMMM, yyyy mm:ss a')}
+                        {createdOn}
                       </Typography>
                     </div>
                   </Link>
