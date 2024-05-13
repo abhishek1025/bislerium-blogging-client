@@ -13,8 +13,7 @@ import {
   getRequest,
   postRequest,
   putRequest,
-  showNotification,
-  useUserAuthContext,
+  showNotification
 } from '../../utils';
 
 const PostBlogForm = () => {
@@ -241,14 +240,14 @@ const PostBlogForm = () => {
               <button
                 className='bg-white absolute right-2 top-2 py-2 px-3 rounded bg-opacity-80'
                 onClick={() => {
-                  setCoverImgURL();
-                  setCoverImgFile();
+                  setCoverImgURL(); // setting cover image url
+                  setCoverImgFile(); // setting cover image file
                 }}>
                 <RxCross2 size={20} />
               </button>
 
               <img
-                src={base64ToImage(coverImgURL)}
+                src={base64ToImage(coverImgURL)} //base64toImage to make image visible
                 alt=''
                 className='w-full h-[400px] object-cover rounded-lg mb-8'
               />
