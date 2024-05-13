@@ -16,13 +16,14 @@ import { VOTE_TYPE } from '../../constants';
 const BlogDetails = () => {
   const { blogID } = useParams();
 
+  console.log(blogID);
+
   const {
     data: blog,
     isLoading,
     refetch: refetchBlogDetails,
     isSuccess,
   } = useBlogDetails(blogID);
-
 
   const { voteType, submitVote } = useSubmitVote({
     blogId: blogID,
@@ -154,5 +155,4 @@ const BlogDetails = () => {
 };
 
 export default BlogDetails;
-
 
