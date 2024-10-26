@@ -42,4 +42,6 @@ This project is a full-stack blogging platform built using **C# (ASP.NET)** for 
 ![Screenshot](./screenshots/6.png)
 ![Screenshot](./screenshots/7.png)
 ![Screenshot](./screenshots/8.png)
-![Screenshot](./screenshots/9.png)![Screenshot](./screenshots/10.png)![Screenshot](./screenshots/11.png)
+![Screenshot](./screenshots/9.png)
+![Screenshot](./screenshots/10.png)
+![Screenshot](./screenshots/11.png)
