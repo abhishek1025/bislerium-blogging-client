@@ -16,8 +16,6 @@ import { VOTE_TYPE } from '../../constants';
 const BlogDetails = () => {
   const { blogID } = useParams();
 
-  console.log(blogID);
-
   const {
     data: blog,
     isLoading,

@@ -14,6 +14,7 @@ const useHandleLogOut = () => {
     setAuthToken(null);
     setCurrentUser(null);
     removeCookie(COOKIE_NAMES.AUTH_TOKEN);
+    removeCookie(COOKIE_NAMES.ROLE);
     navigate('/authentication');
 
     showNotification({
@@ -27,4 +28,5 @@ const useHandleLogOut = () => {
 };
 
 export default useHandleLogOut;
+
 

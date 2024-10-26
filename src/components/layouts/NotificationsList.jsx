@@ -1,17 +1,16 @@
-import React from 'react';
 import {
+  IconButton,
   Menu,
   MenuHandler,
-  MenuList,
   MenuItem,
-  IconButton,
-  Avatar,
-  Typography,
+  MenuList,
+  Typography
 } from '@material-tailwind/react';
 import { useQuery } from '@tanstack/react-query';
-import { getRequest } from '../../utils/api';
+import React from 'react';
 import { Link } from 'react-router-dom';
-import { format } from 'date-fns';
+import { v4 as uuid } from 'uuid';
+import { getRequest } from '../../utils/api';
 
 function ClockIcon() {
   return (
@@ -74,7 +73,9 @@ const NotificationsList = () => {
           <MenuList className='flex flex-col gap-2'>
             {notifications?.map(({ message, blogId, createdOn }) => {
               return (
-                <MenuItem className='flex items-center gap-4 py-2 pl-2 pr-8'>
+                <MenuItem
+                  className='flex items-center gap-4 py-2 pl-2 pr-8'
+                  key={uuid()}>
                   <Link to={`/blogs/${blogId}`}>
                     <div className='flex flex-col gap-1'>
                       <Typography
@@ -85,7 +86,7 @@ const NotificationsList = () => {
                       </Typography>
                       <Typography className='flex items-center gap-1 text-sm font-medium text-blue-gray-500'>
                         <ClockIcon />
-                        {format(new Date(createdOn), 'dd MMMM, yyyy mm:ss a')}
+                        {createdOn}
                       </Typography>
                     </div>
                   </Link>

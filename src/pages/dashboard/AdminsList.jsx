@@ -1,31 +1,20 @@
 import {
   Avatar,
-  Button,
-  Chip,
-  Input,
-  Option,
-  Select,
-  Switch,
-  Typography,
+  Typography
 } from '@material-tailwind/react';
 import { useQuery } from '@tanstack/react-query';
 import { format } from 'date-fns';
-import { useState } from 'react';
-import { FaSearch } from 'react-icons/fa';
 import { v4 as uuid } from 'uuid';
 import {
   ButtonWithHoverEffect,
   Loader,
   NoDataComponent,
-  PageTitle,
-  PaginationButton,
+  PageTitle
 } from '../../components';
 
-import { toast } from 'react-toastify';
-import Swal from 'sweetalert2';
-import { base64ToImage, getRequest } from '../../utils';
 import { FiPlus } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
+import { base64ToImage, getRequest } from '../../utils';
 
 const Users = () => {
   const LIMIT = 10;
@@ -126,7 +115,7 @@ const Users = () => {
                                 variant='small'
                                 color='blue-gray'
                                 className='font-normal'>
-                                {firstName}
+                                {firstName} {" "}
                                 {lastName}
                               </Typography>
                             </div>
@@ -147,7 +136,7 @@ const Users = () => {
                             variant='small'
                             color='blue-gray'
                             className='font-normal'>
-                            {createdOn}
+                            {format(new Date(createdOn), 'dd MMMM, yyyy HH:mm a')}
                           </Typography>
                         </td>
                       </tr>

@@ -35,7 +35,7 @@ const PopularBloggers = () => {
   return (
     <div className=' mt-8 p-4'>
       <div className='flex justify-between'>
-        <Typography variant='h5'>{filterType} Popular Blogs</Typography>
+        <Typography variant='h5'>{filterType} Popular Bloggers</Typography>
         <div className='flex gap-x-5'>
           {filterType === FILTER_TYPE.MONTHLY && (
             <Input

@@ -22,7 +22,7 @@ const useSubmitVote = ({ blogId = '', commentId = '' }) => {
 
   const [voteType, setVoteType] = useState('');
 
-  const { data: existingVoteType } = useQuery({
+  const { data: existingVoteType, refetch } = useQuery({
     queryKey: ['Existing Vote Type', blogId ? blogId : commentId],
     queryFn: async () => {
       const endpoint = blogId
@@ -59,16 +59,23 @@ const useSubmitVote = ({ blogId = '', commentId = '' }) => {
       }
 
       if (!voteId && !voteType) {
+        setVoteType(newVoteType);
         await postVote({ newVoteType, authorId });
+        refetch();
+        return;
       }
 
       if (voteId && voteType === newVoteType) {
+        setVoteType('');
         await deleteVote(authorId);
+        refetch();
         return;
       }
 
       if (voteId && voteType !== newVoteType) {
+        setVoteType(newVoteType);
         await updateVote({ newVoteType, authorId });
+        refetch();
         return;
       }
     };
@@ -85,8 +92,6 @@ const useSubmitVote = ({ blogId = '', commentId = '' }) => {
       title: 'Success!!',
       message: `You ${message[newVoteType]} the ${itemType} !!!`,
     });
-
-    setVoteType(newVoteType);
 
     await postRequest({
       endpoint: `/vote`,
@@ -110,7 +115,6 @@ const useSubmitVote = ({ blogId = '', commentId = '' }) => {
       title: 'Success!!',
       message: `You removed  the vote!!!`,
     });
-    setVoteType('');
 
     await deleteRequest({
       endpoint: `/vote/${voteId}`,
@@ -129,8 +133,6 @@ const useSubmitVote = ({ blogId = '', commentId = '' }) => {
       title: 'Success!!',
       message: `You ${message[newVoteType]} the ${itemType} !!!`,
     });
-
-    setVoteType(newVoteType);
 
     await putRequest({
       endpoint: `/vote/vote-type/update/${voteId}?voteType=${newVoteType}`,

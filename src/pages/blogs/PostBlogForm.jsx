@@ -44,7 +44,7 @@ const PostBlogForm = () => {
     if (blog) {
       setTitle(blog.title);
       setContent(blog.content);
-      setCoverImgURL(blog.coverImg);
+      setCoverImgURL(blog.coverPage);
     }
   }, [blog]);
 
@@ -278,4 +278,6 @@ const PostBlogForm = () => {
 };
 
 export default PostBlogForm;
+
+
 

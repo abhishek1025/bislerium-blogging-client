@@ -49,12 +49,12 @@ const SignInForm = ({ authPageContainerRef, setLoader }) => {
         message: 'Welcome back',
       });
 
-      const { userId, token } = res.data;
+      const { token, isAdmin } = res.data;
 
       setAuthToken(token);
 
-      createCookie(COOKIE_NAMES.USER_ID, userId);
       createCookie(COOKIE_NAMES.AUTH_TOKEN, token);
+      createCookie(COOKIE_NAMES.ROLE, isAdmin ? 'admin' : 'user');
 
       navigate('/');
 
@@ -128,5 +128,4 @@ const SignInForm = ({ authPageContainerRef, setLoader }) => {
 };
 
 export default SignInForm;
-
 

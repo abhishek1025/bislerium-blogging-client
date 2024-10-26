@@ -21,7 +21,7 @@ export const UserAuthContextProvider = ({ children }) => {
   const [currentUser, setCurrentUser] = useState(null);
   const [authToken, setAuthToken] = useState(authTokenFromCookie);
 
-  const { sendNotification } = useSignalRConnection();
+  const { sendNotification } = useSignalRConnection(currentUser);
 
   useEffect(() => {
     const fetchUserInfo = async () => {
@@ -51,7 +51,7 @@ export const UserAuthContextProvider = ({ children }) => {
       }
 
       removeCookie(COOKIE_NAMES.AUTH_TOKEN);
-      removeCookie(COOKIE_NAMES.USER_ID);
+      removeCookie(COOKIE_NAMES.ROLE);
       setCurrentUser(null);
     };
 
@@ -72,5 +72,6 @@ export const UserAuthContextProvider = ({ children }) => {
     </UserAuthContext.Provider>
   );
 };
+
 
 

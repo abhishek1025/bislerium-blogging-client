@@ -26,3 +26,7 @@ export const getAuthTokenFromCookie = () => {
   return getCookieValue(COOKIE_NAMES.AUTH_TOKEN);
 };
 
+export const getUserRole = () => {
+  return getCookieValue(COOKIE_NAMES.ROLE);
+};
+

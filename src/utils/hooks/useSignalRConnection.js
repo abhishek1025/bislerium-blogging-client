@@ -6,7 +6,7 @@ import { showNotification } from '../alerts';
 import { toast } from 'react-toastify';
 import { queryClient } from '../../main';
 
-const useSignalRConnection = () => {
+const useSignalRConnection = currentUser => {
   const hubConnection = useRef(null);
   const authToken = getAuthTokenFromCookie();
 
@@ -49,9 +49,11 @@ const useSignalRConnection = () => {
         .then(() => console.log('Connection stopped'))
         .catch(err => console.error('Error while stopping connection: ', err));
     };
-  }, [authToken]); // Dependency array ensures connection is refreshed when authToken changes
+  }, [authToken]); 
 
   const sendNotification = ({ userId, blogId, message }) => {
+    if (userId === currentUser?.id) return;
+
     if (
       hubConnection.current &&
       hubConnection.current.state === signalR.HubConnectionState.Connected

@@ -18,6 +18,8 @@ import {
 import { Button } from '@material-tailwind/react';
 
 const Blogs = () => {
+  const [randomNum, setRandomNum] = useState(Math.random());
+
   const FILTER_OPTIONS = {
     RANDOM: 'RANDOM',
     RELEVANT: 'RELEVANT',
@@ -25,6 +27,11 @@ const Blogs = () => {
   };
   // filtering options
   const giveFilterConfig = option => {
+    console.log({
+      searchByRecency: FILTER_OPTIONS.LATEST === option,
+      searchByRank: FILTER_OPTIONS.RELEVANT === option,
+      searchByRandom: FILTER_OPTIONS.RANDOM === option,
+    });
     return {
       searchByRecency: FILTER_OPTIONS.LATEST === option,
       searchByRank: FILTER_OPTIONS.RELEVANT === option,
@@ -44,13 +51,13 @@ const Blogs = () => {
   const navigate = useNavigate();
 
   const { data: blogs, isLoading: isBlogsFetching } = useQuery({
-    queryKey: [page, filterOptionFromParams, 'GET ALL BLOGS'],
+    queryKey: [page, filterOptionFromParams, randomNum, 'GET ALL BLOGS'],
     queryFn: async () => {
       const res = await postRequest({
         endpoint: '/blog',
         data: {
           pageIndex: page,
-          pageSize: 10,
+          pageSize: LIMIT,
           ...giveFilterConfig(filterOptionFromParams || FILTER_OPTIONS.LATEST),
         },
       });
@@ -104,13 +111,12 @@ const Blogs = () => {
           <Button
             size='sm'
             onClick={() => {
-              if (filterOptionFromParams === FILTER_OPTIONS.RANDOM) {
-                setSearchParams({});
-              } else {
-                setSearchParams({
-                  filter: FILTER_OPTIONS.RANDOM.toLowerCase(),
-                });
-              }
+              setRandomNum(Math.random());
+
+              setSearchParams({
+                filter: FILTER_OPTIONS.RANDOM.toLowerCase(),
+              });
+
               setPage(1);
             }}
             variant={
@@ -164,5 +170,4 @@ const Blogs = () => {
 };
 
 export default Blogs;
-
 

@@ -128,7 +128,7 @@ const AddAdminForm = () => {
       showNotification({
         icon: 'success',
         title: 'Account Created',
-        message: 'Your account has been created successfully',
+        message: 'New Admin account has been created successfully',
       });
 
       setUserInfo(defaultUserInfo);
