@@ -4,8 +4,6 @@
 
 This project is a full-stack blogging platform built using **C# (ASP.NET)** for the back-end, **React.js** for the front-end, and **PostgreSQL** for the database. It allows users to create, interact with, and manage blogs while offering real-time notifications, admin metrics dashboards, and optimized performance.
 
----
-
 ## Key Features
 
 - **Blogging Platform**:
@@ -25,8 +23,6 @@ This project is a full-stack blogging platform built using **C# (ASP.NET)** for 
 - **API Documentation**:
   - **Swagger** for API documentation and testing.
 
----
-
 ## Technologies Used
 
 - **Front-end**: React.js
@@ -36,11 +32,8 @@ This project is a full-stack blogging platform built using **C# (ASP.NET)** for 
 - **Data Queries**: LINQ
 - **API Documentation**: Swagger
 
----
-
 ## Screenshots
 
----
 ![Screenshot](./screenshots/1.png)
 ![Screenshot](./screenshots/2.png)
 ![Screenshot](./screenshots/3.png)
@@ -49,3 +42,4 @@ This project is a full-stack blogging platform built using **C# (ASP.NET)** for 
 ![Screenshot](./screenshots/6.png)
 ![Screenshot](./screenshots/7.png)
 ![Screenshot](./screenshots/8.png)
+![Screenshot](./screenshots/9.png)![Screenshot](./screenshots/10.png)![Screenshot](./screenshots/11.png)
